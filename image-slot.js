@@ -439,7 +439,7 @@
 
   class ImageSlot extends HTMLElement {
     static get observedAttributes() {
-      return ['shape', 'radius', 'mask', 'fit', 'placeholder', 'src', 'id', 'credit', 'credit-href'];
+      return ['shape', 'radius', 'mask', 'fit', 'placeholder', 'src', 'id', 'credit', 'credit-href', 'fetchpriority', 'loading'];
     }
 
     /** Duplicate-slide hook (called by deck-stage, see its
@@ -1108,6 +1108,15 @@
         };
       }
       this._cap.textContent = this.getAttribute('placeholder') || 'Drop an image';
+      // Pass through LCP-tuning hints to the real <img> â€” the host sets
+      // these on the hero/above-the-fold slot so the browser prioritizes
+      // its fetch instead of treating it as a generic background image.
+      const fetchPriority = this.getAttribute('fetchpriority');
+      if (fetchPriority) this._img.setAttribute('fetchpriority', fetchPriority);
+      else this._img.removeAttribute('fetchpriority');
+      const loading = this.getAttribute('loading');
+      if (loading) this._img.setAttribute('loading', loading);
+      else this._img.removeAttribute('loading');
       // Toggle via style.display â€” the [hidden] attribute alone loses to
       // the display:flex / display:block rules in the stylesheet above.
       // An Unsplash src with no credit attribute must NOT render â€” showing

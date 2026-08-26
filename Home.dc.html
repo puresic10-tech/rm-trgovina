@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="sr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preload" as="image" href="./assets/magacin-eksterijer-vladimirci.jpg" fetchpriority="high">
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" fetchpriority="low">
 <title>RM-TRGOVINA | Stovarište građevinskog materijala Vladimirci</title>
 <meta name="description" content="RM-TRGOVINA — stovarište građevinskog materijala u Vladimircima. Cement, armatura, opeka, agregati, pelet i đubrivo, sa dostavom na adresu gradilišta u Vladimircima i okolini.">
 <link rel="canonical" href="https://rmtrgovina.rs/">
@@ -45,7 +47,7 @@
   <dc-import name="Header" active-page="Početna" transparent="{{ false }}" hint-size="100%,72px"></dc-import>
   <div style="position:relative;flex:1;display:flex;flex-direction:{{ heroOuterDirection }};align-items:center;min-height:0;overflow:visible;">
     <div style="{{ heroImageWrapStyle }}">
-      <image-slot id="hero-bg" fit="cover" shape="rect" radius="0" src="./assets/magacin-eksterijer-vladimirci.jpg" placeholder="Magacin — placeholder"></image-slot>
+      <image-slot id="hero-bg" fit="cover" shape="rect" radius="0" src="./assets/magacin-eksterijer-vladimirci.jpg" placeholder="Magacin — placeholder" fetchpriority="high"></image-slot>
     </div>
     <div style="position:absolute;inset:0;z-index:1;background:{{ heroGradient1 }};pointer-events:none;display:{{ heroGradientDisplay }};"></div>
     <div style="position:absolute;inset:0;z-index:1;background:{{ heroGradient2 }};pointer-events:none;display:{{ heroGradientDisplay }};"></div>
@@ -222,7 +224,7 @@
 class Component extends DCLogic {
   state = { isWide1650: typeof window !== 'undefined' ? window.innerWidth >= 1650 : false, isWide1600: typeof window !== 'undefined' ? window.innerWidth >= 1600 : false, isWide1500: typeof window !== 'undefined' ? window.innerWidth >= 1500 : false, isNarrow1170: typeof window !== 'undefined' ? window.innerWidth < 1170 : false, isPhone: typeof window !== 'undefined' ? window.innerWidth < 860 : false, isMidRange: typeof window !== 'undefined' ? (window.innerWidth >= 550 && window.innerWidth < 700) : false, isNarrow1150: typeof window !== 'undefined' ? window.innerWidth < 1000 : false, isNarrow950: typeof window !== 'undefined' ? window.innerWidth < 950 : false, isPhone: typeof window !== 'undefined' ? window.innerWidth < 860 : false, heroCenterPhone: typeof window !== 'undefined' ? (window.innerWidth >= 500 && window.innerWidth < 700) : false, isVeryNarrow: typeof window !== 'undefined' ? window.innerWidth <= 410 : false, statCounts: [0, 0, 0], whyVisible: false, isMobile: typeof window !== 'undefined' ? window.innerWidth < 760 : false, isNarrow: typeof window !== 'undefined' ? window.innerWidth < 860 : false, isCatMobile: typeof window !== 'undefined' ? window.innerWidth < 600 : false, isSliderNarrow: typeof window !== 'undefined' ? window.innerWidth < 1150 : false, isSliderWide: typeof window !== 'undefined' ? window.innerWidth >= 850 : true, homeSlide: 0, lightboxOpen: false };
   statsTarget = [10, 1, 100];
-  slideSrcs = ['./assets/magacin-vladimirci.jpg', './assets/roba-na-paleti-1.jpg', './assets/utovar-robe-1.jpg', './assets/roba-na-paleti-2.jpg', './assets/utovar-robe-2.jpg'];
+  slideSrcs = ['./assets/magacin-vladimirci.webp', './assets/roba-na-paleti-1.jpg', './assets/utovar-robe-1.jpg', './assets/roba-na-paleti-2.jpg', './assets/utovar-robe-2.jpg'];
   slidePlaceholders = ['Magacin — placeholder', 'Roba na paleti', 'Utovar', 'Roba na paleti', 'Utovar'];
 
   componentDidMount() {
