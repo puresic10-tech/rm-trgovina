@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asortiman | RM-TRGOVINA Vladimirci</title>
+<meta name="description" content="Kompletan asortiman građevinskog materijala u Vladimircima — cement, armatura, opeka, agregati, pelet, đubrivo i još mnogo toga, sa dostavom na gradilište.">
+<link rel="canonical" href="https://rmtrgovina.rs/asortiman">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Asortiman | RM-TRGOVINA Vladimirci">
+<meta property="og:description" content="Deset kategorija materijala na lageru — od cementa do krovnih materijala, u Vladimircima.">
+<meta property="og:url" content="https://rmtrgovina.rs/asortiman">
+<meta property="og:image" content="https://rmtrgovina.rs/assets/magacin-eksterijer-vladimirci.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>*{box-sizing:border-box;}html,body{margin:0;background:#F4F4F2;overflow-x:hidden;max-width:100%;}
+.cta-red{position:relative;overflow:hidden;transition:transform 0.18s ease,filter 0.18s ease,box-shadow 0.18s ease;}
+.cta-red::before{content:'';position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(115deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.55) 50%,rgba(255,255,255,0) 100%);transform:skewX(-20deg);pointer-events:none;transition:left 0.5s ease;}
+.cta-red:hover::before{left:130%;}
+.cta-red:hover{filter:brightness(0.88);transform:translateY(-2px);box-shadow:0 8px 18px -4px rgba(227,0,15,0.5);}
+.cta-red:active{transform:translateY(0);filter:brightness(0.82);box-shadow:0 4px 10px -3px rgba(227,0,15,0.45);}
+</style>
+</helmet>
+<div style="font-family:'Source Sans 3',sans-serif;background:#F4F4F2;">
+<dc-import name="Header" active-page="Asortiman" hint-size="100%,72px"></dc-import>
+
+<section style="max-width:1280px;margin:0 auto;padding:64px 24px 24px;">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;color:#E3000F;text-transform:uppercase;margin-bottom:14px;">Kompletan asortiman</div>
+  <h1 style="font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(30px,4vw,44px);color:#2F2483;margin:0 0 16px;">Materijal za svaku fazu gradnje.</h1>
+  <p style="font-family:'Source Sans 3',sans-serif;font-size:16px;color:#2B2B2B;max-width:640px;line-height:1.6;">Od temelja do krova — deset kategorija materijala na lageru. Za tačne cene i raspoloživost kontaktirajte nas telefonom.</p>
+</section>
+
+<section style="max-width:1280px;margin:0 auto;padding:24px 24px 90px;border-top:2px solid #2F2483;">
+  <sc-for list="{{ rows }}" as="cat" hint-placeholder-count="10">
+    <div style="border-bottom:1px solid #DCDAD5;padding-bottom:{{ cat.extraBottomGap }};">
+      <div onClick="{{ cat.onToggle }}" style="display:grid;grid-template-columns:{{ cat.headerCols }};gap:{{ cat.headerGap }};padding:{{ cat.rowPadding }};align-items:start;cursor:pointer;">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:{{ cat.numSize }};color:{{ cat.numFill }};-webkit-text-stroke:{{ cat.numStroke }};margin-bottom:{{ cat.numMarginBottom }};">{{ cat.num }}</div>
+        <div>
+          <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:{{ cat.titleSize }};color:{{ cat.titleColor }};margin-bottom:8px;transition:color 0.2s ease,font-size 0.2s ease;">{{ cat.name }}</div>
+          <div style="font-family:'Source Sans 3',sans-serif;font-size:15px;color:{{ cat.descColor }};line-height:1.6;max-width:680px;">{{ cat.desc }}</div>
+        </div>
+        <div style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;color:{{ cat.arrowColor }};font-size:36px;transform:rotate({{ cat.arrowRot }}deg);transition:transform 0.25s ease;padding:12px;margin:-12px;box-sizing:content-box;">&#9662;</div>
+      </div>
+      <div style="{{ cat.panelStyle }}">
+        <div style="display:grid;grid-template-columns:{{ cat.panelCols }};gap:28px;padding:0 0 36px;">
+          <div></div>
+          <div>
+            <sc-if value="{{ cat.hasGroups }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:26px;margin-bottom:22px;">
+                <sc-for list="{{ cat.groups }}" as="grp" hint-placeholder-count="2">
+                  <div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;letter-spacing:0.14em;color:#E3000F;text-transform:uppercase;margin-bottom:10px;">{{ grp.brand }}</div>
+                    <div style="display:grid;grid-template-columns:{{ cat.groupItemCols }};gap:8px 24px;">
+                      <sc-for list="{{ grp.items }}" as="it" hint-placeholder-count="3">
+                        <div style="display:flex;align-items:baseline;gap:10px;font-family:'Source Sans 3',sans-serif;font-size:15px;color:#2B2B2B;line-height:1.6;">
+                          <span style="width:6px;height:6px;border-radius:50%;background:#2F2483;flex-shrink:0;transform:translateY(-2px);"></span>
+                          <span>{{ it }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ cat.noGroups }}" hint-placeholder-val="{{ true }}">
+              <ul style="margin:0 0 22px;padding:0 0 0 18px;font-family:'Source Sans 3',sans-serif;font-size:15px;color:#2B2B2B;line-height:1.9;">
+                <sc-for list="{{ cat.items }}" as="it" hint-placeholder-count="4">
+                  <li>{{ it }}</li>
+                </sc-for>
+              </ul>
+            </sc-if>
+            <div style="display:grid;grid-template-columns:{{ cat.imgCols }};gap:12px;">
+              <sc-for list="{{ cat.imageTiles }}" as="im" hint-placeholder-count="3">
+                <div style="height:200px;background:#EAE8E5;cursor:pointer;" onClick="{{ im.onOpen }}">
+                  <image-slot id="{{ im.id }}" fit="cover" shape="rect" radius="0" src="{{ im.src }}" placeholder="{{ cat.name }}"></image-slot>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</section>
+
+<sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;background:rgba(20,20,20,0.92);z-index:50;display:flex;align-items:center;justify-content:center;padding:40px;">
+    <div style="position:relative;width:92vw;height:88vh;pointer-events:none;">
+      <image-slot id="asortiman-lightbox-img" fit="contain" shape="rect" radius="0" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
+    </div>
+    <button onClick="{{ closeLightbox }}" aria-label="Zatvori" style="position:absolute;top:24px;right:32px;width:44px;height:44px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:24px;cursor:pointer;">&times;</button>
+  </div>
+</sc-if>
+
+<section style="background:#F4F4F2;border-top:2px solid #2F2483;">
+  <div style="max-width:1280px;margin:0 auto;padding:56px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;">
+    <div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:600;font-size:26px;color:#2F2483;margin-bottom:6px;">Ne vidite šta tražite?</div>
+      <div style="font-family:'Source Sans 3',sans-serif;font-size:15px;color:#6B7280;">Pozovite — proveravamo dostupnost i za posebne narudžbine.</div>
+    </div>
+    <a href="Kontakt.dc.html" class="cta-red" style="font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:15px;background:#E3000F;color:#FFFFFF;text-decoration:none;padding:16px 30px;white-space:nowrap;">Kontaktirajte nas</a>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,300px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { categories: [], open: null, isMobile: typeof window !== 'undefined' ? window.innerWidth < 760 : false, lightboxSrc: null };
+  componentDidMount() {
+    import('./categories.js').then(m => this.setState({ categories: m.CATEGORIES }));
+    this.onResize = () => this.setState({ isMobile: window.innerWidth < 760 });
+    window.addEventListener('resize', this.onResize);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+  renderVals() {
+    const open = this.state.open;
+    const isMobile = this.state.isMobile;
+    const rows = this.state.categories.map((c, i) => {
+      const isOpen = open === i;
+      const isNextOpen = open === i + 1;
+      const hasGroups = !!(c.groups && c.groups.length);
+      return {
+        ...c,
+        hasGroups,
+        noGroups: !hasGroups,
+        numFill: 'transparent',
+        numStroke: isOpen ? '1.5px #E3000F' : '1.5px #9CA3AF',
+        numSize: isMobile ? (isOpen ? '32px' : '26px') : (isOpen ? '48px' : '38px'),
+        titleColor: isOpen ? '#2F2483' : '#9CA3AF',
+        titleSize: isMobile ? '23px' : (isOpen ? '24px' : '19px'),
+        descColor: isOpen ? '#2B2B2B' : '#B4B8BE',
+        arrowColor: isOpen ? '#E3000F' : '#9CA3AF',
+        arrowRot: isOpen ? 180 : 0,
+        rowPadding: isOpen ? '40px 0 32px' : '26px 0',
+        headerCols: isMobile ? '1fr' : 'minmax(60px,110px) 1fr auto',
+        headerGap: isMobile ? '6px' : '20px 28px',
+        panelCols: isMobile ? '1fr' : 'minmax(60px,110px) 1fr',
+        groupItemCols: isMobile ? '1fr' : 'repeat(2,minmax(0,1fr))',
+        numMarginBottom: isMobile ? '4px' : '0px',
+        extraBottomGap: isNextOpen ? '18px' : '0px',
+        onToggle: () => this.setState(s => ({ open: s.open === i ? null : i })),
+        panelStyle: isOpen ? 'display:block;' : 'display:none;',
+        imageTiles: (c.images || []).map((f, j) => { const src = './assets/gallery/' + f; return { id: 'as-' + i + '-' + j, src, onOpen: () => this.setState({ lightboxSrc: src }) }; }),
+        imgCols: isMobile ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))',
+      };
+    });
+    return { rows, lightboxOpen: !!this.state.lightboxSrc, lightboxSrc: this.state.lightboxSrc || '', closeLightbox: () => this.setState({ lightboxSrc: null }) };
+  }
+}
+</script>
+</body>
+</html>

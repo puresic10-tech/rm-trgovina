@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Često postavljana pitanja | RM-TRGOVINA Vladimirci</title>
+<meta name="description" content="Odgovori na najčešća pitanja o plaćanju, dostavi i asortimanu — RM-TRGOVINA Vladimirci.">
+<link rel="canonical" href="https://rmtrgovina.rs/faq">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Često postavljana pitanja | RM-TRGOVINA Vladimirci">
+<meta property="og:description" content="Plaćanje, dostava i asortiman — odgovori na najčešća pitanja.">
+<meta property="og:url" content="https://rmtrgovina.rs/faq">
+<meta property="og:image" content="https://rmtrgovina.rs/assets/magacin-eksterijer-vladimirci.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;}html,body{margin:0;background:#F4F4F2;overflow-x:hidden;max-width:100%;}</style>
+</helmet>
+<div style="font-family:'Source Sans 3',sans-serif;background:#F4F4F2;">
+<dc-import name="Header" active-page="FAQ" hint-size="100%,72px"></dc-import>
+
+<section style="max-width:900px;margin:0 auto;padding:64px 24px 40px;">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;color:#E3000F;text-transform:uppercase;margin-bottom:14px;">FAQ</div>
+  <h1 style="font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(30px,4vw,42px);color:#2F2483;margin:0 0 12px;">Često postavljana pitanja.</h1>
+  <p style="font-family:'Source Sans 3',sans-serif;font-size:15px;color:#6B7280;">Odgovori na pitanja koja nam kupci najčešće postavljaju — o dostavi, plaćanju i načinu poslovanja. Ako ne pronađete odgovor koji tražite, slobodno nas pozovite, rado ćemo vam pomoći.</p>
+</section>
+
+<section style="max-width:900px;margin:0 auto;padding:0 24px 90px;">
+  <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="6">
+    <div style="border-top:2px solid #2F2483;">
+      <button onClick="{{ f.toggle }}" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:22px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:18px;color:#2F2483;">{{ f.q }}</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:20px;color:#E3000F;flex-shrink:0;">{{ f.symbol }}</span>
+      </button>
+      <div style="max-height:{{ f.maxHeight }};overflow:hidden;transition:max-height 0.3s ease;">
+        <p style="font-family:'Source Sans 3',sans-serif;font-size:15px;color:#2B2B2B;line-height:1.65;margin:0 0 24px;max-width:700px;">{{ f.a }}</p>
+      </div>
+    </div>
+  </sc-for>
+</section>
+
+<dc-import name="Footer" hint-size="100%,300px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { open: {} };
+  toggle(i) { this.setState(s => ({ open: { ...s.open, [i]: !s.open[i] } })); }
+  renderVals() {
+    const raw = [
+      { q: 'Koji su načini plaćanja?', a: 'Plaćanje je moguće karticom, karticom na rate, gotovinom, kao i putem fakture za pravna lica.' },
+      { q: 'Da li vršite dostavu?', a: 'Da, dostavljamo direktno na adresu gradilišta, po celoj okolini Vladimiraca, u roku od 24h od porudžbine.' },
+      { q: 'Gde se nalazi vaše stovarište?', a: 'RM-TRGOVINA se nalazi u Vladimircima, na adresi Beogradski put 1130 Skupljen. Tačnu lokaciju i mapu možete pronaći na našoj Kontakt stranici.' },
+      { q: 'Koje je radno vreme?', a: 'Radimo svakog dana od 07:00 do 15:00 časova, osim nedeljom kada ne radimo.' },
+      { q: 'Da li radite vikendom?', a: 'Subotom radimo od 07:00 do 15:00. Nedeljom ne radimo.' },
+    ];
+    return {
+      faqs: raw.map((f, i) => {
+        const isOpen = !!this.state.open[i];
+        return { ...f, symbol: isOpen ? '−' : '+', maxHeight: isOpen ? '200px' : '0px', toggle: () => this.toggle(i) };
+      }),
+    };
+  }
+}
+</script>
+</body>
+</html>

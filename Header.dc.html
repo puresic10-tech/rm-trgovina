@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+.cta-red{position:relative;overflow:hidden;transition:transform 0.18s ease,filter 0.18s ease,box-shadow 0.18s ease;}
+.cta-red::before{content:'';position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(115deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.55) 50%,rgba(255,255,255,0) 100%);transform:skewX(-20deg);pointer-events:none;transition:left 0.5s ease;}
+.cta-red:hover::before{left:130%;}
+.cta-red:hover{filter:brightness(0.88);transform:translateY(-2px);box-shadow:0 8px 18px -4px rgba(227,0,15,0.5);}
+.cta-red:active{transform:translateY(0);filter:brightness(0.82);box-shadow:0 4px 10px -3px rgba(227,0,15,0.45);}
+</style>
+</helmet>
+<header style="background:{{ headerBg }};position:{{ headerPosition }};top:0;left:0;right:0;z-index:50;border-bottom:{{ headerBorder }};">
+  <div style="margin:0 auto;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+    <a href="Home.dc.html" style="display:flex;align-items:center;text-decoration:none;white-space:nowrap;margin-right:auto;"><img src="./assets/rm-trgovina-logo.png" alt="RM-Trgovina" style="height:48px;width:auto;display:block;"></a>
+    <nav style="display:{{ navDisplay }};align-items:center;gap:28px;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+        <a href="{{ item.href }}" style="font-family:'Source Sans 3',sans-serif;font-size:15px;text-decoration:none;padding-bottom:6px;border-bottom:2px solid {{ item.bottomColor }};color:{{ item.color }};font-weight:{{ item.weight }};">{{ item.label }}</a>
+      </sc-for>
+    </nav>
+    <a href="Kontakt.dc.html" class="cta-red" style="display:{{ navDisplay }};font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;background:#E3000F;color:#FFFFFF;text-decoration:none;padding:10px 20px;white-space:nowrap;margin-left:auto;">Zatraži ponudu</a>
+    <button onClick="{{ toggleMenu }}" style="display:{{ hamburgerDisplay }};flex-direction:column;gap:5px;background:none;border:none;padding:8px;cursor:pointer;">
+      <span style="width:24px;height:2px;background:#E3000F;display:block;"></span>
+      <span style="width:24px;height:2px;background:#E3000F;display:block;"></span>
+      <span style="width:24px;height:2px;background:#E3000F;display:block;"></span>
+    </button>
+  </div>
+  <nav style="display:{{ mobileNavDisplay }};flex-direction:column;background:#FFFFFF;padding:8px 24px 20px;">
+    <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+      <a href="{{ item.href }}" style="font-family:'Source Sans 3',sans-serif;font-size:16px;text-decoration:none;color:#2F2483;font-weight:{{ item.weight }};padding:12px 0;border-bottom:1px solid #DCDAD5;">{{ item.label }}</a>
+    </sc-for>
+    <a href="Kontakt.dc.html" class="cta-red" style="font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;background:#E3000F;color:#FFFFFF;text-decoration:none;padding:12px 18px;margin-top:14px;text-align:center;">Zatraži ponudu</a>
+  </nav>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;activePage&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Početna&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;transparent&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { mobileOpen: false, narrow: typeof window !== 'undefined' ? window.innerWidth < 860 : false };
+  componentDidMount() {
+    this.onResize = () => this.setState(s => ({ narrow: window.innerWidth < 860, mobileOpen: window.innerWidth < 860 ? s.mobileOpen : false }));
+    window.addEventListener('resize', this.onResize);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+  toggleMenu = () => this.setState(s => ({ mobileOpen: !s.mobileOpen }));
+  renderVals() {
+    const active = this.props.activePage || 'Početna';
+    const items = [
+      { label: 'Početna', href: 'Home.dc.html' },
+      { label: 'Asortiman', href: 'Asortiman.dc.html' },
+      { label: 'O nama', href: 'ONama.dc.html' },
+      { label: 'Galerija', href: 'Galerija.dc.html' },
+      { label: 'FAQ', href: 'FAQ.dc.html' },
+      { label: 'Kontakt', href: 'Kontakt.dc.html' },
+    ].map(it => {
+      const isActive = it.label === active;
+      const transparent = !!this.props.transparent;
+      return { ...it, color: isActive ? '#E3000F' : (transparent ? '#FFFFFF' : '#2F2483'), weight: isActive ? '700' : '500', bottomColor: isActive ? '#E3000F' : 'transparent' };
+    });
+    const transparent = !!this.props.transparent;
+    return {
+      navItems: items,
+      navDisplay: this.state.narrow ? 'none' : 'flex',
+      mobileNavDisplay: (this.state.narrow && this.state.mobileOpen) ? 'flex' : 'none',
+      hamburgerDisplay: this.state.narrow ? 'flex' : 'none',
+      toggleMenu: this.toggleMenu,
+      headerBg: transparent ? 'transparent' : '#FFFFFF',
+      headerPosition: transparent ? 'absolute' : 'relative',
+      headerBorder: transparent ? 'none' : '2px solid #2F2483',
+      logoColor: '#2F2483',
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galerija | RM-TRGOVINA Vladimirci</title>
+<meta name="description" content="Pogledajte fotografije stovarišta i materijala RM-TRGOVINA u Vladimircima.">
+<link rel="canonical" href="https://rmtrgovina.rs/galerija">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Galerija | RM-TRGOVINA Vladimirci">
+<meta property="og:description" content="Fotografije stovarišta i materijala RM-TRGOVINA u Vladimircima.">
+<meta property="og:url" content="https://rmtrgovina.rs/galerija">
+<meta property="og:image" content="https://rmtrgovina.rs/assets/magacin-eksterijer-vladimirci.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+*{box-sizing:border-box;}html,body{margin:0;background:#F4F4F2;overflow-x:hidden;max-width:100%;}
+@keyframes tileIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</helmet>
+<div style="font-family:'Source Sans 3',sans-serif;background:#F4F4F2;">
+<dc-import name="Header" active-page="Galerija" hint-size="100%,72px"></dc-import>
+
+<section style="max-width:1280px;margin:0 auto;padding:64px 24px 40px;">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;color:#E3000F;text-transform:uppercase;margin-bottom:14px;">Galerija</div>
+  <h1 style="font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(30px,4vw,42px);color:#2F2483;margin:0 0 12px;">Magacin i roba, iz blizine.</h1>
+  <p style="font-family:'Source Sans 3',sans-serif;font-size:16px;color:#6B7280;max-width:600px;">Objekat, stovarište i roba — fotografije sa naše lokacije u Vladimircima.</p>
+</section>
+
+<section style="max-width:1280px;margin:0 auto;padding:0 24px 90px;">
+  <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="3">
+    <div style="margin-bottom:56px;">
+      <div style="border-bottom:2px solid #2F2483;padding-bottom:10px;margin-bottom:22px;">
+        <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;">
+          <h2 style="font-family:'Oswald',sans-serif;font-weight:600;font-size:22px;color:#2F2483;margin:0;">{{ cat.name }}</h2>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ galGridCols }};gap:20px;">
+        <sc-for list="{{ cat.tiles }}" as="t" hint-placeholder-count="4">
+          <div ref="{{ t.ref }}" onClick="{{ t.onClick }}" style="min-width:0;height:300px;background:#EAE8E5;cursor:pointer;animation:tileIn 0.5s ease {{ t.delay }} both;">
+            <image-slot id="{{ t.id }}" fit="cover" shape="rect" radius="0" src="{{ t.src }}" placeholder="{{ t.label }}"></image-slot>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+  <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:flex;align-items:center;justify-content:center;">
+      <div onClick="{{ closeLightbox }}" style="position:absolute;inset:0;cursor:pointer;"></div>
+      <div style="position:relative;width:92vw;height:92vh;pointer-events:none;">
+        <image-slot id="gal-lightbox" fit="contain" shape="rect" radius="0" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
+      </div>
+      <button onClick="{{ prevImg }}" aria-label="Prethodna" style="position:absolute;top:50%;left:24px;transform:translateY(-50%);width:48px;height:48px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:22px;cursor:pointer;z-index:2;">&#8249;</button>
+      <button onClick="{{ nextImg }}" aria-label="Sledeća" style="position:absolute;top:50%;right:24px;transform:translateY(-50%);width:48px;height:48px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:22px;cursor:pointer;z-index:2;">&#8250;</button>
+      <button onClick="{{ closeLightbox }}" aria-label="Zatvori" style="position:absolute;top:24px;right:32px;width:44px;height:44px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:24px;cursor:pointer;z-index:2;">&times;</button>
+    </div>
+  </sc-if>
+</section>
+
+<dc-import name="Footer" hint-size="100%,300px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { isMobile: typeof window !== 'undefined' ? window.innerWidth < 760 : false, visible: {}, lightboxIndex: null };
+  componentDidMount() {
+    this.onResize = () => this.setState({ isMobile: window.innerWidth < 760 });
+    window.addEventListener('resize', this.onResize);
+    this.io = new IntersectionObserver((entries) => {
+      let changed = null;
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const idx = e.target.getAttribute('data-idx');
+        if (idx == null) return;
+        (changed = changed || {})[idx] = true;
+        this.io.unobserve(e.target);
+      });
+      if (changed) this.setState(s => ({ visible: { ...s.visible, ...changed } }));
+    }, { rootMargin: '600px 0px' });
+    (this.tileNodes || []).forEach(n => n && this.io.observe(n));
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    if (this.io) this.io.disconnect();
+  }
+  renderVals() {
+    const isMobile = this.state.isMobile;
+    const catDefs = [
+      { name: 'Objekat i stovarište', files: ['vozni-park.webp','objekat-vladimirci-2.webp','stovariste-vladimirci-1.webp','stovariste-vladimirci-3.webp','objekat-vladimirci-4.webp','objekat-vladimirci-5.webp'] },
+      { name: 'Cement i vezivni materijali', files: ['krec-1.webp','cement-2.webp'] },
+      { name: 'Armatura i gvožđe', files: ['armatura-1.webp','armatura-2.webp','armatura-3.webp','armatura-4.webp','uzengije-1.webp','armatura-6.webp'] },
+      { name: 'Opeka i blok', files: ['betonski-blok-2.webp','blok-i-cigla-1.webp','blok-i-cigla-3.webp','betonski-blok-i-cigla-5.webp','blok-2.webp','betonski-blok-1.webp'] },
+      { name: 'Krovni materijali', files: ['crep-1.webp','crep-2.webp'] },
+      { name: 'Agregati', files: ['sljunak-ploce.webp','materijal-u-magacinu.webp'] },
+      { name: 'Građa', files: ['gradja-rogovi-1.webp','gradja-2.webp','gradja-3.webp','gradja-4.webp','gradja-5.webp','gradja-6.webp','gradja-7.webp','gradja-8.webp','gradja-9.webp'] },
+      { name: 'Ostalo', files: ['djubrivo-uskladisteno.webp','betonske-cevi.webp'] },
+    ];
+    const files = [];
+    catDefs.forEach(c => c.files.forEach(f => files.push([f, c.name])));
+    this.tileNodes = this.tileNodes || [];
+    let idx = 0;
+    const categories = catDefs.map(c => {
+      const tiles = c.files.map(fname => {
+        const i = idx++;
+        return {
+          id: 'gal-' + i,
+          src: (i < 6 || this.state.visible[i]) ? './assets/gallery/' + fname : '',
+          label: c.name,
+          delay: (Math.min(i, 8) * 0.05).toFixed(2) + 's',
+          onClick: () => this.setState({ lightboxIndex: i }),
+          ref: (el) => {
+            this.tileNodes[i] = el;
+            if (el) { el.setAttribute('data-idx', String(i)); if (this.io && !this.state.visible[i]) this.io.observe(el); }
+          },
+        };
+      });
+      return { name: c.name, countLabel: String(c.files.length).padStart(2, '0'), tiles };
+    });
+    const li = this.state.lightboxIndex;
+    return {
+      lightboxOpen: li != null,
+      lightboxSrc: li != null ? './assets/gallery/' + files[li][0] : '',
+      closeLightbox: () => this.setState({ lightboxIndex: null }),
+      prevImg: () => this.setState(s => ({ lightboxIndex: (s.lightboxIndex - 1 + files.length) % files.length })),
+      nextImg: () => this.setState(s => ({ lightboxIndex: (s.lightboxIndex + 1) % files.length })),
+      categories, galGridCols: isMobile ? 'repeat(1,minmax(0,1fr))' : 'repeat(3,minmax(0,1fr))' };
+  }
+}
+</script>
+</body>
+</html>

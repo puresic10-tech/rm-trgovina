@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O nama | RM-TRGOVINA Vladimirci</title>
+<meta name="description" content="RM-TRGOVINA — stovarište građevinskog materijala u Vladimircima. Upoznajte našu misiju, pristup i tim.">
+<link rel="canonical" href="https://rmtrgovina.rs/o-nama">
+<meta property="og:type" content="website">
+<meta property="og:title" content="O nama | RM-TRGOVINA Vladimirci">
+<meta property="og:description" content="Nova firma, ozbiljan pristup — stovarište građevinskog materijala u Vladimircima.">
+<meta property="og:url" content="https://rmtrgovina.rs/o-nama">
+<meta property="og:image" content="https://rmtrgovina.rs/assets/magacin-eksterijer-vladimirci.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>*{box-sizing:border-box;}html,body{margin:0;background:#F4F4F2;overflow-x:hidden;max-width:100%;}
+@media (max-width:700px){
+  .onama-cards-grid{grid-template-columns:1fr!important;}
+  .onama-card{border-right:none!important;border-top:1px solid #DCDAD5;}
+  .onama-card-1{border-top:none!important;}
+}
+@media (min-width:1350px){
+  .onama-kicker{font-size:15px!important;}
+  .onama-h1{font-size:48px!important;}
+  .onama-desc{font-size:18px!important;}
+  .onama-card-label{font-size:14px!important;}
+  .onama-card-text{font-size:17px!important;}
+}
+</style>
+</helmet>
+<div style="font-family:'Source Sans 3',sans-serif;background:#F4F4F2;">
+<dc-import name="Header" active-page="O nama" hint-size="100%,72px"></dc-import>
+
+<section style="max-width:1280px;margin:0 auto;padding:64px 24px 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:56px;align-items:center;">
+  <div>
+    <div class="onama-kicker" style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;color:#E3000F;text-transform:uppercase;margin-bottom:14px;">O nama</div>
+    <h1 class="onama-h1" style="font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(30px,4vw,42px);color:#2F2483;margin:0 0 20px;">Nova firma, ozbiljan pristup.</h1>
+    <p class="onama-desc" style="font-family:'Source Sans 3',sans-serif;font-size:16px;color:#2B2B2B;line-height:1.7;margin:0 0 16px;">RM-TRGOVINA je osnovana 2025. godine sa jasnim ciljem — da majstorima, izvođačima radova i privatnim licima obezbedi širok asortiman građevinskog materijala na jednom mestu, uz brzu dostavu i fer odnos.</p>
+    <p class="onama-desc" style="font-family:'Source Sans 3',sans-serif;font-size:16px;color:#2B2B2B;line-height:1.7;margin:0;">Kao nova firma, gradimo poslovanje na svežem pristupu: pažljivo biramo dobavljače, ulažemo u organizaciju magacina i logistike i trudimo se da svakom kupcu, od privatnog investitora do velikog izvođača, obezbedimo isti nivo pažnje.</p>
+  </div>
+  <div style="position:relative;aspect-ratio:4/3;background:#EAE8E5;overflow:hidden;">
+    <sc-for list="{{ slides }}" as="s" hint-placeholder-count="4">
+      <div style="{{ s.style }}">
+        <image-slot id="{{ s.id }}" fit="cover" shape="rect" radius="0" src="{{ s.src }}" placeholder="RM-TRGOVINA"></image-slot>
+      </div>
+    </sc-for>
+    <div style="position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:2;">
+      <sc-for list="{{ dots }}" as="d" hint-placeholder-count="4">
+        <button onClick="{{ d.onClick }}" aria-label="Slika" style="{{ d.style }}"></button>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:1280px;margin:0 auto;padding:24px 24px 90px;border-top:2px solid #2F2483;">
+  <div class="onama-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;">
+    <div class="onama-card onama-card-1" style="padding:36px 28px;border-right:1px solid #DCDAD5;">
+      <div class="onama-card-label" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E3000F;margin-bottom:10px;">MISIJA</div>
+      <div class="onama-card-text" style="font-family:'Source Sans 3',sans-serif;font-size:15px;color:#2B2B2B;line-height:1.6;">Da gradnja i renovacija budu jednostavniji — jedan poziv, sav potreban materijal, dostavljen tačno kad i gde je potreban.</div>
+    </div>
+    <div class="onama-card onama-card-2" style="padding:36px 28px;border-right:1px solid #DCDAD5;">
+      <div class="onama-card-label" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E3000F;margin-bottom:10px;">PRISTUP</div>
+      <div class="onama-card-text" style="font-family:'Source Sans 3',sans-serif;font-size:15px;color:#2B2B2B;line-height:1.6;">Pouzdanost i transparentnost u svakoj porudžbini — jasne cene, tačni rokovi i iskren savet, bez obzira na veličinu naručbine.</div>
+    </div>
+    <div class="onama-card onama-card-3" style="padding:36px 28px;">
+      <div class="onama-card-label" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E3000F;margin-bottom:10px;">TIM</div>
+      <div class="onama-card-text" style="font-family:'Source Sans 3',sans-serif;font-size:15px;color:#2B2B2B;line-height:1.6;">Mali, posvećen tim koji poznaje materijale i razume potrebe gradilišta — dostupan za savet pre, tokom i posle kupovine.</div>
+    </div>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,300px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { i: 0 };
+  files = ['tim-i-magacin-1.webp', 'tim-i-magacin-2.webp', 'tim-i-magacin-3.webp', 'tim-i-magacin-4.webp'];
+  componentDidMount() {
+    this.t = setInterval(() => this.setState(s => ({ i: (s.i + 1) % this.files.length })), 5000);
+  }
+  componentWillUnmount() { if (this.t) clearInterval(this.t); }
+  renderVals() {
+    const cur = this.state.i;
+    return {
+      slides: this.files.map((f, j) => ({
+        id: 'onama-s' + j,
+        src: './assets/gallery/' + f,
+        style: 'position:absolute;inset:0;opacity:' + (j === cur ? 1 : 0) + ';transition:opacity 0.7s ease;',
+      })),
+      dots: this.files.map((_, j) => ({
+        onClick: () => this.setState({ i: j }),
+        style: 'width:10px;height:10px;border-radius:50%;border:none;padding:0;cursor:pointer;background:' + (j === cur ? '#E3000F' : 'rgba(255,255,255,0.85)') + ';box-shadow:0 0 0 1px rgba(0,0,0,0.35);',
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>
