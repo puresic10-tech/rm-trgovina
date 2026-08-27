@@ -850,7 +850,21 @@
         this._gen++;
         this._swapGen = 0;
       }
-      if (this.shadowRoot) this._render();
+      // Pre-connection (during initial HTML parsing), the parser applies
+      // every attribute from the start tag one at a time, firing this
+      // callback per attribute BEFORE the element is inserted into the
+      // tree. Rendering on each of those would let an early attribute
+      // (commonly `src`, since authors tend to write `loading`/
+      // `fetchpriority` after it) kick off the image fetch before a
+      // later `loading`/`fetchpriority` attribute has even been parsed
+      // yet â€” that fetch already started eager/default-priority, and
+      // setting the attribute a moment later has no retroactive effect
+      // on a request the browser already dispatched. connectedCallback's
+      // own _render() call runs once every initial attribute is applied,
+      // so deferring to it here removes the ordering trap entirely.
+      // Post-connection, isConnected is true and reactive updates still
+      // render immediately as before.
+      if (this.shadowRoot && this.isConnected) this._render();
     }
 
     // handleEvent â€” one listener object for all four drag events keeps the
