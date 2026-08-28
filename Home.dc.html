@@ -3,8 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preload" as="image" href="./assets/magacin-eksterijer-vladimirci.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/magacin-eksterijer-vladimirci.jpg" imagesrcset="./assets/magacin-eksterijer-vladimirci-mobile.jpg 750w, ./assets/magacin-eksterijer-vladimirci.jpg 2890w" imagesizes="100vw" fetchpriority="high">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" fetchpriority="low">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <title>RM-TRGOVINA | Stovarište građevinskog materijala Vladimirci</title>
 <meta name="description" content="RM-TRGOVINA — stovarište građevinskog materijala u Vladimircima. Cement, armatura, opeka, agregati, pelet i đubrivo, sa dostavom na adresu gradilišta u Vladimircima i okolini.">
 <link rel="canonical" href="https://rmtrgovina.rs/">
@@ -20,9 +24,6 @@
 <x-dc>
 <helmet>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"HardwareStore","name":"RM-TRGOVINA","image":"https://rmtrgovina.rs/assets/magacin-eksterijer-vladimirci.jpg","address":{"@type":"PostalAddress","streetAddress":"Beogradski put 1130 Skupljen","addressLocality":"Vladimirci","postalCode":"15225","addressCountry":"RS"},"telephone":"+381653360060","url":"https://rmtrgovina.rs/","areaServed":"Vladimirci i okolina"}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <script src="./image-slot.js" defer></script>
 <style>
 *{box-sizing:border-box;}html,body{margin:0;background:#F4F4F2;overflow-x:hidden;max-width:100%;}
@@ -48,7 +49,7 @@
   <dc-import name="Header" active-page="Početna" transparent="{{ false }}" hint-size="100%,72px"></dc-import>
   <div style="position:relative;flex:1;display:flex;flex-direction:{{ heroOuterDirection }};align-items:center;min-height:0;overflow:visible;">
     <div style="{{ heroImageWrapStyle }}">
-      <image-slot id="hero-bg" fit="cover" shape="rect" radius="0" fetchpriority="high" src="./assets/magacin-eksterijer-vladimirci.jpg" placeholder="Magacin — placeholder"></image-slot>
+      <image-slot id="hero-bg" fit="cover" shape="rect" radius="0" fetchpriority="high" srcset="./assets/magacin-eksterijer-vladimirci-mobile.jpg 750w, ./assets/magacin-eksterijer-vladimirci.jpg 2890w" sizes="100vw" src="./assets/magacin-eksterijer-vladimirci.jpg" placeholder="Magacin — placeholder"></image-slot>
     </div>
     <div style="position:absolute;inset:0;z-index:1;background:{{ heroGradient1 }};pointer-events:none;display:{{ heroGradientDisplay }};"></div>
     <div style="position:absolute;inset:0;z-index:1;background:{{ heroGradient2 }};pointer-events:none;display:{{ heroGradientDisplay }};"></div>
@@ -139,7 +140,7 @@
       </div>
       <div style="opacity:{{ deliveryInitOpacity }};animation:{{ deliveryAnim4 }};animation-delay:{{ deliveryAnim4Delay }};"><a href="Kontakt.dc.html" class="cta-red" style="display:inline-block;font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:{{ deliveryBtnSize }};background:#E3000F;color:#FFFFFF;text-decoration:none;padding:{{ deliveryBtnPad }};">Kontaktirajte nas</a></div>
     </div>
-    <div style="min-height:{{ deliveryMinHeight }};opacity:{{ deliveryInitOpacity }};animation:{{ deliveryAnim5 }};animation-delay:{{ deliveryAnim5Delay }};"><image-slot id="delivery-1" fit="cover" shape="rect" radius="0" loading="lazy" src="./assets/dostava-gradjevinskog-materijala.jpg" placeholder="Slika dostave"></image-slot></div>
+    <div style="min-height:{{ deliveryMinHeight }};opacity:{{ deliveryInitOpacity }};animation:{{ deliveryAnim5 }};animation-delay:{{ deliveryAnim5Delay }};"><image-slot id="delivery-1" fit="cover" shape="rect" radius="0" loading="lazy" srcset="./assets/dostava-gradjevinskog-materijala-mobile.jpg 750w, ./assets/dostava-gradjevinskog-materijala.jpg 1446w" sizes="(max-width: 767px) 100vw, 50vw" src="./assets/dostava-gradjevinskog-materijala.jpg" placeholder="Slika dostave"></image-slot></div>
   </div>
 </section>
 
@@ -169,7 +170,7 @@
   <div style="position:relative;width:100%;height:{{ sliderHeight }}px;background:#2F2483;overflow:hidden;">
     <sc-for list="{{ homeSlides }}" as="sl" hint-placeholder-count="5">
       <div style="{{ sl.style }}" onClick="{{ openLightbox }}">
-        <image-slot id="{{ sl.id }}" fit="{{ sliderFit }}" shape="rect" radius="0" loading="lazy" src="{{ sl.src }}" placeholder="{{ sl.placeholder }}"></image-slot>
+        <image-slot id="{{ sl.id }}" fit="{{ sliderFit }}" shape="rect" radius="0" loading="lazy" srcset="{{ sl.srcset }}" sizes="(max-width: 767px) 100vw, 1232px" src="{{ sl.src }}" placeholder="{{ sl.placeholder }}"></image-slot>
       </div>
     </sc-for>
     <sc-if value="{{ arrowsInside }}" hint-placeholder-val="{{ true }}">
@@ -226,6 +227,10 @@ class Component extends DCLogic {
   state = { isWide1650: typeof window !== 'undefined' ? window.innerWidth >= 1650 : false, isWide1600: typeof window !== 'undefined' ? window.innerWidth >= 1600 : false, isWide1500: typeof window !== 'undefined' ? window.innerWidth >= 1500 : false, isNarrow1170: typeof window !== 'undefined' ? window.innerWidth < 1170 : false, isPhone: typeof window !== 'undefined' ? window.innerWidth < 860 : false, isMidRange: typeof window !== 'undefined' ? (window.innerWidth >= 550 && window.innerWidth < 700) : false, isNarrow1150: typeof window !== 'undefined' ? window.innerWidth < 1000 : false, isNarrow950: typeof window !== 'undefined' ? window.innerWidth < 950 : false, isPhone: typeof window !== 'undefined' ? window.innerWidth < 860 : false, heroCenterPhone: typeof window !== 'undefined' ? (window.innerWidth >= 500 && window.innerWidth < 700) : false, isVeryNarrow: typeof window !== 'undefined' ? window.innerWidth <= 410 : false, statCounts: [0, 0, 0], whyVisible: false, isMobile: typeof window !== 'undefined' ? window.innerWidth < 760 : false, isNarrow: typeof window !== 'undefined' ? window.innerWidth < 860 : false, isCatMobile: typeof window !== 'undefined' ? window.innerWidth < 600 : false, isSliderNarrow: typeof window !== 'undefined' ? window.innerWidth < 1150 : false, isSliderWide: typeof window !== 'undefined' ? window.innerWidth >= 850 : true, homeSlide: 0, lightboxOpen: false };
   statsTarget = [10, 1, 100];
   slideSrcs = ['./assets/magacin-vladimirci.webp', './assets/roba-na-paleti-1.jpg', './assets/utovar-robe-1.jpg', './assets/roba-na-paleti-2.jpg', './assets/utovar-robe-2.jpg'];
+  // Mobile-sized (600px) companions for slideSrcs, same order — paired with
+  // each desktop file's real pixel width so the srcset descriptor is accurate.
+  slideSrcsMobile = ['./assets/magacin-vladimirci-mobile.webp', './assets/roba-na-paleti-1-mobile.jpg', './assets/utovar-robe-1-mobile.jpg', './assets/roba-na-paleti-2-mobile.jpg', './assets/utovar-robe-2-mobile.jpg'];
+  slideSrcsW = [2464, 2464, 2464, 2040, 2040];
   slidePlaceholders = ['Magacin — placeholder', 'Roba na paleti', 'Utovar', 'Roba na paleti', 'Utovar'];
 
   componentDidMount() {
@@ -333,6 +338,7 @@ class Component extends DCLogic {
     const homeSlides = this.slidePlaceholders.map((ph, i) => ({
       id: 'home-slide-' + i,
       src: this.slideSrcs[i],
+      srcset: this.slideSrcsMobile[i] + ' 750w, ' + this.slideSrcs[i] + ' ' + this.slideSrcsW[i] + 'w',
       placeholder: ph,
       style: 'position:absolute;inset:0;opacity:' + (i === homeSlide ? 1 : 0) + ';transition:opacity 0.6s ease;pointer-events:' + (i === homeSlide ? 'auto' : 'none') + ';cursor:pointer;',
     }));

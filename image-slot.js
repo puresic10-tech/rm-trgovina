@@ -439,7 +439,7 @@
 
   class ImageSlot extends HTMLElement {
     static get observedAttributes() {
-      return ['shape', 'radius', 'mask', 'fit', 'placeholder', 'src', 'id', 'credit', 'credit-href', 'fetchpriority', 'loading'];
+      return ['shape', 'radius', 'mask', 'fit', 'placeholder', 'src', 'id', 'credit', 'credit-href', 'fetchpriority', 'loading', 'srcset', 'sizes'];
     }
 
     /** Duplicate-slide hook (called by deck-stage, see its
@@ -1131,6 +1131,18 @@
       const loading = this.getAttribute('loading');
       if (loading) this._img.setAttribute('loading', loading);
       else this._img.removeAttribute('loading');
+      // Responsive sources: mirrored onto the real <img> the same way, and
+      // for the SAME reason order matters in the host tag (srcset/sizes
+      // authored before src) â€” these must land before the src assignment
+      // below picks a candidate and fires the fetch, or the browser fetches
+      // the plain src first and re-fetches the resolved candidate once
+      // srcset arrives on a later render.
+      const srcset = this.getAttribute('srcset');
+      if (srcset) this._img.setAttribute('srcset', srcset);
+      else this._img.removeAttribute('srcset');
+      const sizes = this.getAttribute('sizes');
+      if (sizes) this._img.setAttribute('sizes', sizes);
+      else this._img.removeAttribute('sizes');
       // Toggle via style.display â€” the [hidden] attribute alone loses to
       // the display:flex / display:block rules in the stylesheet above.
       // An Unsplash src with no credit attribute must NOT render â€” showing
