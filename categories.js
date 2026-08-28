@@ -12,7 +12,7 @@ export const CATEGORIES = [
   {
     num: '02', name: 'Armatura i gvožđe',
     desc: 'Armaturne mreže, šipke i profili za konstrukcije svih veličina.',
-    items: ['Armaturne mreže Q i R serije', 'Rebrasta betonska šipka Ø8–Ø16', 'Uzengije po meri', 'Sečenje i savijanje po specifikaciji'],
+    items: ['Armaturne mreže Q serije', 'Rebrasta betonska šipka Ø8–Ø20', 'Uzengije po meri', 'Sečenje i savijanje po specifikaciji'],
     images: ['armatura-1.webp', 'armatura-4.webp', 'uzengije-1.webp', 'armatura-6.webp'],
   },
   {
