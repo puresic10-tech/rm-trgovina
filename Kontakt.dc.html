@@ -62,25 +62,52 @@
     </div>
   </div>
   <div style="padding:{{ contactMapPad }};">
-    <div style="width:100%;height:100%;min-height:380px;border:2px solid #2F2483;">
-      <iframe src="https://www.google.com/maps?q=RM-TRGOVINA,+Beogradski+put+1130,+Vladimirci,+Srbija&output=embed" style="width:100%;height:100%;min-height:380px;border:0;display:block;" loading="lazy" title="Lokacija RM-Trgovina"></iframe>
-    </div>
+    <sc-if value="{{ mapConsented }}" hint-placeholder-val="{{ false }}">
+      <div style="width:100%;height:100%;min-height:380px;border:2px solid #2F2483;">
+        <iframe src="https://www.google.com/maps?q=RM-TRGOVINA,+Beogradski+put+1130,+Vladimirci,+Srbija&output=embed" style="width:100%;height:100%;min-height:380px;border:0;display:block;" loading="lazy" title="Lokacija RM-Trgovina"></iframe>
+      </div>
+    </sc-if>
+    <sc-if value="{{ mapNotConsented }}" hint-placeholder-val="{{ true }}">
+      <div style="width:100%;height:100%;min-height:380px;border:2px solid #2F2483;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:16px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#6B7280;text-transform:uppercase;">Mapa nije učitana</div>
+        <div style="font-family:'Source Sans 3',sans-serif;font-size:17px;color:#2B2B2B;line-height:1.5;">Beogradski put 1130<br>Skupljen 15225</div>
+        <p style="font-family:'Source Sans 3',sans-serif;font-size:14px;color:#6B7280;max-width:340px;margin:0;line-height:1.6;">Google Maps se učitava samo uz vaš pristanak na kolačiće. Pogledajte lokaciju direktno na Google Maps, ili promenite izbor u <a href="PolitikaKolacica.dc.html" style="color:#2F2483;">Politici kolačića</a>.</p>
+        <a href="https://www.google.com/maps?q=RM-TRGOVINA,+Beogradski+put+1130,+Vladimirci,+Srbija" target="_blank" rel="noopener noreferrer" class="cta-red" style="display:inline-block;font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;background:#E3000F;color:#FFFFFF;text-decoration:none;padding:12px 24px;">Otvori u Google Maps</a>
+      </div>
+    </sc-if>
   </div>
 </section>
 
 </main>
 <dc-import name="Footer" hint-size="100%,300px"></dc-import>
+<dc-import name="CookieBanner" hint-size="100%,0px"></dc-import>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { isNarrow: typeof window !== 'undefined' ? window.innerWidth < 700 : false };
+  state = {
+    isNarrow: typeof window !== 'undefined' ? window.innerWidth < 700 : false,
+    // Read any prior cookie choice synchronously (same pattern as isNarrow
+    // above) so the map/fallback decision is correct from the very first
+    // render, not just after componentDidMount.
+    mapConsent: (() => {
+      if (typeof window === 'undefined') return null;
+      try { return window.localStorage.getItem('rmt_cookie_consent'); } catch (e) { return null; }
+    })(),
+  };
   componentDidMount() {
     this.onResize = () => this.setState({ isNarrow: window.innerWidth < 700 });
     window.addEventListener('resize', this.onResize);
+    // The cookie banner (a separate imported component) broadcasts this
+    // when the visitor clicks Prihvati/Odbij, so the map can react on THIS
+    // page immediately - the native 'storage' event only fires in other
+    // tabs, not the one that made the change.
+    this.onConsent = (e) => this.setState({ mapConsent: e.detail && e.detail.choice });
+    window.addEventListener('rmt-cookie-consent', this.onConsent);
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('rmt-cookie-consent', this.onConsent);
   }
   renderVals() {
     const isNarrow = this.state.isNarrow;
@@ -89,6 +116,8 @@ class Component extends DCLogic {
       contactInfoPad: isNarrow ? '40px 0' : '40px 40px 40px 0',
       contactInfoBorder: isNarrow ? 'border-bottom:1px solid #DCDAD5' : 'border-right:1px solid #DCDAD5',
       contactMapPad: isNarrow ? '40px 0' : '40px 0 40px 40px',
+      mapConsented: this.state.mapConsent === 'accepted',
+      mapNotConsented: this.state.mapConsent !== 'accepted',
     };
   }
 }

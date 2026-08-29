@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" fetchpriority="low">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<script src="./support.js" defer></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+.cookie-btn-accept{position:relative;overflow:hidden;transition:transform 0.18s ease,filter 0.18s ease,box-shadow 0.18s ease;}
+.cookie-btn-accept::before{content:'';position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(115deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.55) 50%,rgba(255,255,255,0) 100%);transform:skewX(-20deg);pointer-events:none;transition:left 0.5s ease;}
+.cookie-btn-accept:hover::before{left:130%;}
+.cookie-btn-accept:hover{filter:brightness(0.88);}
+.cookie-btn-reject:hover{background:rgba(255,255,255,0.1);}
+</style>
+</helmet>
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:1000;display:{{ bannerDisplay }};background:#2F2483;border-top:2px solid #E3000F;box-shadow:0 -4px 20px rgba(0,0,0,0.15);">
+  <div style="max-width:1280px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <p style="font-family:'Source Sans 3',sans-serif;font-size:14px;color:#E7EBEF;line-height:1.6;margin:0;max-width:760px;flex:1 1 420px;">Ovaj sajt koristi neophodne zapise za rad ovog obaveštenja o kolačićima, kao i Google Maps za prikaz naše lokacije na stranici Kontakt, koji može postaviti sopstvene kolačiće. Detaljnije informacije možete pročitati u našoj <a href="PolitikaPrivatnosti.dc.html" style="color:#FFFFFF;">Politici privatnosti</a> i <a href="PolitikaKolacica.dc.html" style="color:#FFFFFF;">Politici kolačića</a>.</p>
+    <div style="display:flex;gap:12px;flex-shrink:0;">
+      <button onClick="{{ reject }}" class="cookie-btn-reject" style="font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;background:transparent;color:#FFFFFF;border:2px solid #FFFFFF;padding:10px 22px;cursor:pointer;white-space:nowrap;">Odbij</button>
+      <button onClick="{{ accept }}" class="cookie-btn-accept" style="font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;background:#E3000F;color:#FFFFFF;border:none;padding:12px 24px;cursor:pointer;white-space:nowrap;">Prihvati</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  // Read any prior choice synchronously (same pattern Header uses for
+  // window.innerWidth) so the banner never flashes on screen for a visitor
+  // who already decided - it's simply absent from the very first paint.
+  state = {
+    visible: (() => {
+      if (typeof window === 'undefined') return false;
+      try { return !window.localStorage.getItem('rmt_cookie_consent'); } catch (e) { return false; }
+    })(),
+  };
+  setConsent(choice) {
+    try { window.localStorage.setItem('rmt_cookie_consent', choice); } catch (e) {}
+    this.setState({ visible: false });
+    // Same-tab listeners (the Kontakt page's map gate) can't rely on the
+    // native 'storage' event - that only fires in OTHER tabs. Broadcast a
+    // custom event on window instead so this page's own components react
+    // immediately, without needing a reload.
+    try { window.dispatchEvent(new CustomEvent('rmt-cookie-consent', { detail: { choice } })); } catch (e) {}
+  }
+  accept = () => this.setConsent('accepted');
+  reject = () => this.setConsent('rejected');
+  renderVals() {
+    return {
+      bannerDisplay: this.state.visible ? 'block' : 'none',
+      accept: this.accept,
+      reject: this.reject,
+    };
+  }
+}
+</script>
+</body>
+</html>
