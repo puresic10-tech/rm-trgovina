@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preload" as="image" href="./assets/gallery/tim-i-magacin-1.webp" fetchpriority="high">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" fetchpriority="low">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=optional" onload="this.onload=null;this.rel='stylesheet'">
 <title>O nama | RM-TRGOVINA Vladimirci</title>
 <meta name="description" content="RM-TRGOVINA — stovarište građevinskog materijala u Vladimircima. Upoznajte našu misiju, pristup i tim.">
 <link rel="canonical" href="https://rmtrgovina.rs/o-nama">
@@ -52,7 +53,7 @@
   <div style="position:relative;aspect-ratio:4/3;background:#EAE8E5;overflow:hidden;">
     <sc-for list="{{ slides }}" as="s" hint-placeholder-count="4">
       <div style="{{ s.style }}">
-        <image-slot id="{{ s.id }}" fit="cover" shape="rect" radius="0" alt="{{ s.alt }}" src="{{ s.src }}" placeholder="RM-TRGOVINA"></image-slot>
+        <image-slot id="{{ s.id }}" fit="cover" shape="rect" radius="0" fetchpriority="{{ s.fetchpriority }}" alt="{{ s.alt }}" src="{{ s.src }}" placeholder="RM-TRGOVINA"></image-slot>
       </div>
     </sc-for>
     <div style="position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:2;">
@@ -101,6 +102,11 @@ class Component extends DCLogic {
         id: 'onama-s' + j,
         src: './assets/gallery/' + f,
         alt: this.fileAlts[j],
+        // Only the first slide is the LCP candidate (it's the one painted
+        // on initial load, matching the preload link above) - the rest
+        // stay at default priority since they're already discoverable in
+        // the initial HTML and aren't lazy, just not LCP-critical.
+        fetchpriority: j === 0 ? 'high' : '',
         style: 'position:absolute;inset:0;opacity:' + (j === cur ? 1 : 0) + ';transition:opacity 0.7s ease;',
       })),
       dots: this.files.map((_, j) => ({
