@@ -48,7 +48,7 @@
       <div style="display:grid;grid-template-columns:{{ galGridCols }};gap:20px;">
         <sc-for list="{{ cat.tiles }}" as="t" hint-placeholder-count="4">
           <div ref="{{ t.ref }}" onClick="{{ t.onClick }}" style="min-width:0;height:300px;background:#EAE8E5;cursor:pointer;animation:tileIn 0.5s ease {{ t.delay }} both;">
-            <image-slot id="{{ t.id }}" fit="cover" shape="rect" radius="0" src="{{ t.src }}" placeholder="{{ t.label }}"></image-slot>
+            <image-slot id="{{ t.id }}" fit="cover" shape="rect" radius="0" alt="{{ t.alt }}" src="{{ t.src }}" placeholder="{{ t.label }}"></image-slot>
           </div>
         </sc-for>
       </div>
@@ -58,7 +58,7 @@
     <div style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:flex;align-items:center;justify-content:center;">
       <div onClick="{{ closeLightbox }}" style="position:absolute;inset:0;cursor:pointer;"></div>
       <div style="position:relative;width:92vw;height:92vh;pointer-events:none;">
-        <image-slot id="gal-lightbox" fit="contain" shape="rect" radius="0" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
+        <image-slot id="gal-lightbox" fit="contain" shape="rect" radius="0" alt="{{ lightboxAlt }}" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
       </div>
       <button onClick="{{ prevImg }}" aria-label="Prethodna" style="position:absolute;top:50%;left:24px;transform:translateY(-50%);width:48px;height:48px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:22px;cursor:pointer;z-index:2;">&#8249;</button>
       <button onClick="{{ nextImg }}" aria-label="Sledeća" style="position:absolute;top:50%;right:24px;transform:translateY(-50%);width:48px;height:48px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:22px;cursor:pointer;z-index:2;">&#8250;</button>
@@ -106,15 +106,16 @@ class Component extends DCLogic {
       { name: 'Ostalo', files: ['djubrivo-uskladisteno.webp','betonske-cevi.webp'] },
     ];
     const files = [];
-    catDefs.forEach(c => c.files.forEach(f => files.push([f, c.name])));
+    catDefs.forEach(c => c.files.forEach((f, j) => files.push([f, c.name, c.name + ' — fotografija ' + (j + 1)])));
     this.tileNodes = this.tileNodes || [];
     let idx = 0;
     const categories = catDefs.map(c => {
-      const tiles = c.files.map(fname => {
+      const tiles = c.files.map((fname, j) => {
         const i = idx++;
         return {
           id: 'gal-' + i,
           src: (i < 6 || this.state.visible[i]) ? './assets/gallery/' + fname : '',
+          alt: c.name + ' — fotografija ' + (j + 1),
           label: c.name,
           delay: (Math.min(i, 8) * 0.05).toFixed(2) + 's',
           onClick: () => this.setState({ lightboxIndex: i }),
@@ -130,6 +131,7 @@ class Component extends DCLogic {
     return {
       lightboxOpen: li != null,
       lightboxSrc: li != null ? './assets/gallery/' + files[li][0] : '',
+      lightboxAlt: li != null ? files[li][2] : '',
       closeLightbox: () => this.setState({ lightboxIndex: null }),
       prevImg: () => this.setState(s => ({ lightboxIndex: (s.lightboxIndex - 1 + files.length) % files.length })),
       nextImg: () => this.setState(s => ({ lightboxIndex: (s.lightboxIndex + 1) % files.length })),

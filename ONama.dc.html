@@ -51,7 +51,7 @@
   <div style="position:relative;aspect-ratio:4/3;background:#EAE8E5;overflow:hidden;">
     <sc-for list="{{ slides }}" as="s" hint-placeholder-count="4">
       <div style="{{ s.style }}">
-        <image-slot id="{{ s.id }}" fit="cover" shape="rect" radius="0" src="{{ s.src }}" placeholder="RM-TRGOVINA"></image-slot>
+        <image-slot id="{{ s.id }}" fit="cover" shape="rect" radius="0" alt="{{ s.alt }}" src="{{ s.src }}" placeholder="RM-TRGOVINA"></image-slot>
       </div>
     </sc-for>
     <div style="position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:2;">
@@ -86,6 +86,7 @@
 class Component extends DCLogic {
   state = { i: 0 };
   files = ['tim-i-magacin-1.webp', 'tim-i-magacin-2.webp', 'tim-i-magacin-3.webp', 'tim-i-magacin-4.webp'];
+  fileAlts = ['Tim RM-Trgovina ispred magacina', 'Magacin i stovarište RM-Trgovina', 'Tim RM-Trgovina na stovarištu', 'Organizacija robe u magacinu RM-Trgovina'];
   componentDidMount() {
     this.t = setInterval(() => this.setState(s => ({ i: (s.i + 1) % this.files.length })), 5000);
   }
@@ -96,6 +97,7 @@ class Component extends DCLogic {
       slides: this.files.map((f, j) => ({
         id: 'onama-s' + j,
         src: './assets/gallery/' + f,
+        alt: this.fileAlts[j],
         style: 'position:absolute;inset:0;opacity:' + (j === cur ? 1 : 0) + ';transition:opacity 0.7s ease;',
       })),
       dots: this.files.map((_, j) => ({

@@ -49,7 +49,7 @@
   <dc-import name="Header" active-page="Početna" transparent="{{ false }}" hint-size="100%,72px"></dc-import>
   <div style="position:relative;flex:1;display:flex;flex-direction:{{ heroOuterDirection }};align-items:center;min-height:0;overflow:visible;">
     <div style="{{ heroImageWrapStyle }}">
-      <image-slot id="hero-bg" fit="cover" shape="rect" radius="0" fetchpriority="high" srcset="./assets/magacin-eksterijer-vladimirci-mobile.jpg 750w, ./assets/magacin-eksterijer-vladimirci.jpg 2890w" sizes="100vw" src="./assets/magacin-eksterijer-vladimirci.jpg" placeholder="Magacin — placeholder"></image-slot>
+      <image-slot id="hero-bg" fit="cover" shape="rect" radius="0" fetchpriority="high" alt="Spoljašnji izgled objekta i stovarišta RM-Trgovina u Vladimircima" srcset="./assets/magacin-eksterijer-vladimirci-mobile.jpg 750w, ./assets/magacin-eksterijer-vladimirci.jpg 2890w" sizes="100vw" src="./assets/magacin-eksterijer-vladimirci.jpg" placeholder="Magacin — placeholder"></image-slot>
     </div>
     <div style="position:absolute;inset:0;z-index:1;background:{{ heroGradient1 }};pointer-events:none;display:{{ heroGradientDisplay }};"></div>
     <div style="position:absolute;inset:0;z-index:1;background:{{ heroGradient2 }};pointer-events:none;display:{{ heroGradientDisplay }};"></div>
@@ -78,7 +78,7 @@
       <div style="display:flex;gap:56px;align-items:center;width:max-content;animation:brandMarquee 80s linear infinite;">
         <sc-for list="{{ brandLogosLoop }}" as="b" hint-placeholder-count="12">
           <div style="width:160px;height:52px;flex-shrink:0;">
-            <image-slot id="{{ b.id }}" fit="contain" loading="lazy" src="{{ b.src }}" placeholder="Logo"></image-slot>
+            <image-slot id="{{ b.id }}" fit="contain" loading="lazy" alt="{{ b.alt }}" src="{{ b.src }}" placeholder="Logo"></image-slot>
           </div>
         </sc-for>
       </div>
@@ -112,7 +112,7 @@
         </div>
         <div style="width:{{ c.imgBoxW }}px;height:{{ c.imgBoxH }}px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:visible;">
           <div style="width:{{ c.imgBoxSize }}px;height:{{ c.imgBoxHeight }}px;display:flex;align-items:center;justify-content:center;">
-            <image-slot id="{{ c.imgId }}" fit="{{ c.fit }}" loading="lazy" src="{{ c.imgSrc }}" placeholder="{{ c.name }}"></image-slot>
+            <image-slot id="{{ c.imgId }}" fit="{{ c.fit }}" loading="lazy" alt="{{ c.imgAlt }}" src="{{ c.imgSrc }}" placeholder="{{ c.name }}"></image-slot>
           </div>
         </div>
       </a>
@@ -140,7 +140,7 @@
       </div>
       <div style="opacity:{{ deliveryInitOpacity }};animation:{{ deliveryAnim4 }};animation-delay:{{ deliveryAnim4Delay }};"><a href="Kontakt.dc.html" class="cta-red" style="display:inline-block;font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:{{ deliveryBtnSize }};background:#E3000F;color:#FFFFFF;text-decoration:none;padding:{{ deliveryBtnPad }};">Kontaktirajte nas</a></div>
     </div>
-    <div style="min-height:{{ deliveryMinHeight }};opacity:{{ deliveryInitOpacity }};animation:{{ deliveryAnim5 }};animation-delay:{{ deliveryAnim5Delay }};"><image-slot id="delivery-1" fit="cover" shape="rect" radius="0" loading="lazy" srcset="./assets/dostava-gradjevinskog-materijala-mobile.jpg 750w, ./assets/dostava-gradjevinskog-materijala.jpg 1446w" sizes="(max-width: 767px) 100vw, 50vw" src="./assets/dostava-gradjevinskog-materijala.jpg" placeholder="Slika dostave"></image-slot></div>
+    <div style="min-height:{{ deliveryMinHeight }};opacity:{{ deliveryInitOpacity }};animation:{{ deliveryAnim5 }};animation-delay:{{ deliveryAnim5Delay }};"><image-slot id="delivery-1" fit="cover" shape="rect" radius="0" loading="lazy" alt="Dostava građevinskog materijala kamionom na adresu gradilišta" srcset="./assets/dostava-gradjevinskog-materijala-mobile.jpg 750w, ./assets/dostava-gradjevinskog-materijala.jpg 1446w" sizes="(max-width: 767px) 100vw, 50vw" src="./assets/dostava-gradjevinskog-materijala.jpg" placeholder="Slika dostave"></image-slot></div>
   </div>
 </section>
 
@@ -170,7 +170,7 @@
   <div style="position:relative;width:100%;height:{{ sliderHeight }}px;background:#2F2483;overflow:hidden;">
     <sc-for list="{{ homeSlides }}" as="sl" hint-placeholder-count="5">
       <div style="{{ sl.style }}" onClick="{{ openLightbox }}">
-        <image-slot id="{{ sl.id }}" fit="{{ sliderFit }}" shape="rect" radius="0" loading="lazy" srcset="{{ sl.srcset }}" sizes="(max-width: 767px) 100vw, 1232px" src="{{ sl.src }}" placeholder="{{ sl.placeholder }}"></image-slot>
+        <image-slot id="{{ sl.id }}" fit="{{ sliderFit }}" shape="rect" radius="0" loading="lazy" alt="{{ sl.alt }}" srcset="{{ sl.srcset }}" sizes="(max-width: 767px) 100vw, 1232px" src="{{ sl.src }}" placeholder="{{ sl.placeholder }}"></image-slot>
       </div>
     </sc-for>
     <sc-if value="{{ arrowsInside }}" hint-placeholder-val="{{ true }}">
@@ -199,7 +199,7 @@
     <div style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:flex;align-items:center;justify-content:center;cursor:default;">
       <div onClick="{{ closeLightbox }}" style="position:absolute;inset:0;cursor:pointer;"></div>
     <div style="position:relative;width:92vw;height:92vh;pointer-events:none;">
-        <image-slot id="home-lightbox-img" fit="contain" shape="rect" radius="0" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
+        <image-slot id="home-lightbox-img" fit="contain" shape="rect" radius="0" alt="{{ lightboxAlt }}" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
       </div>
       <button onClick="{{ prevSlide }}" aria-label="Prethodna" style="position:absolute;top:50%;left:24px;transform:translateY(-50%);width:48px;height:48px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:22px;cursor:pointer;z-index:2;">&#8249;</button>
       <button onClick="{{ nextSlide }}" aria-label="Sledeća" style="position:absolute;top:50%;right:24px;transform:translateY(-50%);width:48px;height:48px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:22px;cursor:pointer;z-index:2;">&#8250;</button>
@@ -232,6 +232,7 @@ class Component extends DCLogic {
   slideSrcsMobile = ['./assets/magacin-vladimirci-mobile.webp', './assets/roba-na-paleti-1-mobile.jpg', './assets/utovar-robe-1-mobile.jpg', './assets/roba-na-paleti-2-mobile.jpg', './assets/utovar-robe-2-mobile.jpg'];
   slideSrcsW = [2464, 2464, 2464, 2040, 2040];
   slidePlaceholders = ['Magacin — placeholder', 'Roba na paleti', 'Utovar', 'Roba na paleti', 'Utovar'];
+  slideAlts = ['Spoljašnji izgled magacina RM-Trgovina u Vladimircima', 'Građevinski materijal upakovan na paleti', 'Utovar robe na kamion u stovarištu', 'Roba na paletama spremna za dostavu', 'Utovar građevinskog materijala na vozilo'];
 
   componentDidMount() {
     this.onResize = () => this.setState({ isWide1650: window.innerWidth >= 1650, isWide1600: window.innerWidth >= 1600, isWide1500: window.innerWidth >= 1500, isNarrow1170: window.innerWidth < 1170, isPhone: window.innerWidth < 860, heroCenterPhone: window.innerWidth >= 500 && window.innerWidth < 700, isVeryNarrow: window.innerWidth <= 410, isMidRange: window.innerWidth >= 550 && window.innerWidth < 700, isNarrow1150: window.innerWidth < 1000, isNarrow950: window.innerWidth < 950, isPhone: window.innerWidth < 860, isMobile: window.innerWidth < 760, isNarrow: window.innerWidth < 860, isCatMobile: window.innerWidth < 600, isSliderNarrow: window.innerWidth < 1150, isSliderWide: window.innerWidth >= 850 });
@@ -286,12 +287,13 @@ class Component extends DCLogic {
       ? 'position:absolute;inset:0;z-index:1;background:transparent;pointer-events:none;'
       : 'position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(23,47,145,1) 0%,rgba(23,47,145,1) 30%,rgba(23,47,145,0) 100%);pointer-events:none;';
     const brandSrcs = ['./assets/eko-step-logo.png', './assets/mas-promet-logo.png', './assets/zorka-opeka-logo.png', './assets/toza-markovic-logo.png', './assets/titan-logo.png', './assets/creaton-logo.png'];
+    const brandNames = ['Eko Step Pelet', 'Mas-Promet', 'Zorka Opeka', 'Toza Marković', 'Titan', 'Creaton'];
     const repeats = 4;
     const brandHalf = [];
     for (let r = 0; r < repeats; r++) {
-      brandSrcs.forEach((src, i) => brandHalf.push({ id: 'brand-logo-' + r + '-' + i, src }));
+      brandSrcs.forEach((src, i) => brandHalf.push({ id: 'brand-logo-' + r + '-' + i, src, alt: brandNames[i] + ' logo' }));
     }
-    const brandLogosLoop = brandHalf.concat(brandHalf.map(b => ({ id: b.id + '-dup', src: b.src })));
+    const brandLogosLoop = brandHalf.concat(brandHalf.map(b => ({ id: b.id + '-dup', src: b.src, alt: b.alt })));
 
     const statLabels = ['Kategorija asortimana', 'Dan za dostavu', '% fokusa na kvalitet'];
     const statSuffix = ['+', '', '%'];
@@ -310,7 +312,7 @@ class Component extends DCLogic {
       { num: '06', name: 'Građa', span: 1, imgSrc: './assets/gradjevinska-grada.webp' },
     ].map((c, i) => {
       const sq = 98;
-      return { ...c, mobileSpan: 1, imgId: 'cat-tile-' + i, hasImg: !!c.imgSrc, noImg: !c.imgSrc, fit: 'contain', imgBoxSize: sq, imgBoxHeight: sq, imgBoxW: 98, imgBoxH: 98 };
+      return { ...c, mobileSpan: 1, imgId: 'cat-tile-' + i, hasImg: !!c.imgSrc, noImg: !c.imgSrc, fit: 'contain', imgBoxSize: sq, imgBoxHeight: sq, imgBoxW: 98, imgBoxH: 98, imgAlt: c.name };
     });
 
     const whyRaw = [
@@ -339,6 +341,7 @@ class Component extends DCLogic {
       id: 'home-slide-' + i,
       src: this.slideSrcs[i],
       srcset: this.slideSrcsMobile[i] + ' 750w, ' + this.slideSrcs[i] + ' ' + this.slideSrcsW[i] + 'w',
+      alt: this.slideAlts[i],
       placeholder: ph,
       style: 'position:absolute;inset:0;opacity:' + (i === homeSlide ? 1 : 0) + ';transition:opacity 0.6s ease;pointer-events:' + (i === homeSlide ? 'auto' : 'none') + ';cursor:pointer;',
     }));
@@ -405,7 +408,7 @@ class Component extends DCLogic {
       arrowsInside: !this.state.isSliderNarrow,
       sliderFit: 'cover',
       sliderHeight: this.state.isSliderWide ? 620 : 340,
-      lightboxOpen: this.state.lightboxOpen, lightboxSrc: this.slideSrcs[homeSlide],
+      lightboxOpen: this.state.lightboxOpen, lightboxSrc: this.slideSrcs[homeSlide], lightboxAlt: this.slideAlts[homeSlide],
       statsRef: (el) => { this.statsNode = el; },
       whyRef: (el) => { this.whyNode = el; },
     };

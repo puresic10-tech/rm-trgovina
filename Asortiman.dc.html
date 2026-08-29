@@ -82,7 +82,7 @@
             <div style="display:grid;grid-template-columns:{{ cat.imgCols }};gap:12px;">
               <sc-for list="{{ cat.imageTiles }}" as="im" hint-placeholder-count="3">
                 <div style="height:200px;background:#EAE8E5;cursor:pointer;" onClick="{{ im.onOpen }}">
-                  <image-slot id="{{ im.id }}" fit="cover" shape="rect" radius="0" src="{{ im.src }}" placeholder="{{ cat.name }}"></image-slot>
+                  <image-slot id="{{ im.id }}" fit="cover" shape="rect" radius="0" alt="{{ im.alt }}" src="{{ im.src }}" placeholder="{{ cat.name }}"></image-slot>
                 </div>
               </sc-for>
             </div>
@@ -96,7 +96,7 @@
 <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
   <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;background:rgba(20,20,20,0.92);z-index:50;display:flex;align-items:center;justify-content:center;padding:40px;">
     <div style="position:relative;width:92vw;height:88vh;pointer-events:none;">
-      <image-slot id="asortiman-lightbox-img" fit="contain" shape="rect" radius="0" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
+      <image-slot id="asortiman-lightbox-img" fit="contain" shape="rect" radius="0" alt="{{ lightboxAlt }}" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
     </div>
     <button onClick="{{ closeLightbox }}" aria-label="Zatvori" style="position:absolute;top:24px;right:32px;width:44px;height:44px;background:rgba(255,255,255,0.15);color:#FFFFFF;border:none;font-size:24px;cursor:pointer;">&times;</button>
   </div>
@@ -152,11 +152,11 @@ class Component extends DCLogic {
         extraBottomGap: isNextOpen ? '18px' : '0px',
         onToggle: () => this.setState(s => ({ open: s.open === i ? null : i })),
         panelStyle: isOpen ? 'display:block;' : 'display:none;',
-        imageTiles: (c.images || []).map((f, j) => { const src = './assets/gallery/' + f; return { id: 'as-' + i + '-' + j, src, onOpen: () => this.setState({ lightboxSrc: src }) }; }),
+        imageTiles: (c.images || []).map((f, j) => { const src = './assets/gallery/' + f; const alt = c.name + ' — fotografija ' + (j + 1); return { id: 'as-' + i + '-' + j, src, alt, onOpen: () => this.setState({ lightboxSrc: src, lightboxAlt: alt }) }; }),
         imgCols: isMobile ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))',
       };
     });
-    return { rows, lightboxOpen: !!this.state.lightboxSrc, lightboxSrc: this.state.lightboxSrc || '', closeLightbox: () => this.setState({ lightboxSrc: null }) };
+    return { rows, lightboxOpen: !!this.state.lightboxSrc, lightboxSrc: this.state.lightboxSrc || '', lightboxAlt: this.state.lightboxAlt || '', closeLightbox: () => this.setState({ lightboxSrc: null }) };
   }
 }
 </script>

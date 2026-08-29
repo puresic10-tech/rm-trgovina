@@ -439,7 +439,7 @@
 
   class ImageSlot extends HTMLElement {
     static get observedAttributes() {
-      return ['shape', 'radius', 'mask', 'fit', 'placeholder', 'src', 'id', 'credit', 'credit-href', 'fetchpriority', 'loading', 'srcset', 'sizes'];
+      return ['shape', 'radius', 'mask', 'fit', 'placeholder', 'src', 'id', 'credit', 'credit-href', 'fetchpriority', 'loading', 'srcset', 'sizes', 'alt'];
     }
 
     /** Duplicate-slide hook (called by deck-stage, see its
@@ -1131,6 +1131,14 @@
       const loading = this.getAttribute('loading');
       if (loading) this._img.setAttribute('loading', loading);
       else this._img.removeAttribute('loading');
+      // Alt text: mirrored from the host so authored copy reaches the real
+      // <img> instead of the template's static alt="". No fallback to
+      // `placeholder` â€” that string is authoring/empty-state chrome (often
+      // literally "X â€” placeholder"), not a description of the photo, so a
+      // slot with no authored alt stays decorative (alt="") rather than
+      // exposing that text to screen readers.
+      const altText = this.getAttribute('alt');
+      this._img.setAttribute('alt', altText || '');
       // Responsive sources: mirrored onto the real <img> the same way, and
       // for the SAME reason order matters in the host tag (srcset/sizes
       // authored before src) â€” these must land before the src assignment
