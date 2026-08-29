@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preload" as="image" href="./assets/gallery/vozni-park.webp" imagesrcset="./assets/gallery/vozni-park-mobile.webp 750w, ./assets/gallery/vozni-park.webp 1200w" imagesizes="(max-width: 767px) 100vw, 400px" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/gallery/objekat-vladimirci-2.webp" imagesrcset="./assets/gallery/objekat-vladimirci-2-mobile.webp 750w, ./assets/gallery/objekat-vladimirci-2.webp 1200w" imagesizes="(max-width: 767px) 100vw, 400px" fetchpriority="high">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" fetchpriority="low">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +51,7 @@
       <div style="display:grid;grid-template-columns:{{ galGridCols }};gap:20px;">
         <sc-for list="{{ cat.tiles }}" as="t" hint-placeholder-count="4">
           <div ref="{{ t.ref }}" onClick="{{ t.onClick }}" style="min-width:0;height:300px;background:#EAE8E5;cursor:pointer;animation:tileIn 0.5s ease {{ t.delay }} both;">
-            <image-slot id="{{ t.id }}" fit="cover" shape="rect" radius="0" alt="{{ t.alt }}" src="{{ t.src }}" placeholder="{{ t.label }}"></image-slot>
+            <image-slot id="{{ t.id }}" fit="cover" shape="rect" radius="0" fetchpriority="{{ t.fetchpriority }}" srcset="{{ t.srcset }}" sizes="{{ t.sizes }}" alt="{{ t.alt }}" src="{{ t.src }}" placeholder="{{ t.label }}"></image-slot>
           </div>
         </sc-for>
       </div>
@@ -77,24 +79,48 @@
 class Component extends DCLogic {
   state = { isMobile: typeof window !== 'undefined' ? window.innerWidth < 760 : false, visible: {}, lightboxIndex: null };
   componentDidMount() {
-    this.onResize = () => this.setState({ isMobile: window.innerWidth < 760 });
+    this.onResize = () => { this.setState({ isMobile: window.innerWidth < 760 }); this.checkVisible(); };
     window.addEventListener('resize', this.onResize);
-    this.io = new IntersectionObserver((entries) => {
-      let changed = null;
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const idx = e.target.getAttribute('data-idx');
-        if (idx == null) return;
-        (changed = changed || {})[idx] = true;
-        this.io.unobserve(e.target);
-      });
-      if (changed) this.setState(s => ({ visible: { ...s.visible, ...changed } }));
-    }, { rootMargin: '600px 0px' });
-    (this.tileNodes || []).forEach(n => n && this.io.observe(n));
+    // Reveals below-the-fold tiles as the page scrolls. This used to run
+    // on IntersectionObserver rooted implicitly at the viewport, but on
+    // this site that never fired past its initial mount-time batch. Root
+    // cause: <body> here is height:100vh with overflow-y:auto (this whole
+    // app renders inside a fixed-height, internally-scrolling shell) -
+    // window.scrollTo() is a no-op and window.scrollY never changes, real
+    // scrolling happens INSIDE body, and Chromium's viewport-rooted
+    // IntersectionObserver fast-path doesn't re-evaluate off of that
+    // (only off document.scrollingElement's own scroll position, which
+    // never moves here). A plain scroll-driven getBoundingClientRect()
+    // check (same 600px lookahead the old rootMargin used) sidesteps that
+    // by not depending on which element is "the" scroller at all.
+    this.onScroll = () => {
+      if (this.__scrollTicking) return;
+      this.__scrollTicking = true;
+      requestAnimationFrame(() => { this.__scrollTicking = false; this.checkVisible(); });
+    };
+    // capture: true - a 'scroll' event fired by an overflow:auto element
+    // (body, here) doesn't bubble per spec, so a bubble-phase listener on
+    // window never sees it; capture-phase listeners still do, since
+    // capture always walks the full ancestor chain on the way down.
+    window.addEventListener('scroll', this.onScroll, { passive: true, capture: true });
+    this.checkVisible();
+  }
+  checkVisible() {
+    const nodes = this.tileNodes || [];
+    const vh = window.innerHeight || 0;
+    let changed = null;
+    nodes.forEach((el, i) => {
+      if (!el || this.state.visible[i]) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < vh + 600 && rect.bottom > -600) {
+        (changed = changed || {})[i] = true;
+      }
+    });
+    if (changed) this.setState(s => ({ visible: { ...s.visible, ...changed } }));
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
-    if (this.io) this.io.disconnect();
+    window.removeEventListener('scroll', this.onScroll, { capture: true });
   }
   renderVals() {
     const isMobile = this.state.isMobile;
@@ -110,6 +136,21 @@ class Component extends DCLogic {
     ];
     const files = [];
     catDefs.forEach(c => c.files.forEach((f, j) => files.push([f, c.name, c.name + ' — fotografija ' + (j + 1)])));
+    // Mobile-sized (750px) companions for all 6 eagerly-loaded tiles
+    // (category 0 - the ones that render immediately with a real src,
+    // below). These 6 loading full-resolution (1200px) originals in
+    // parallel on a throttled mobile connection is what was pushing LCP
+    // past 6s: whichever of them finished loading LAST became the final
+    // LCP candidate, since every tile in this grid renders at the same
+    // size and each new same-size paint replaces the previous LCP entry.
+    const mobileVariants = {
+      'vozni-park.webp': 'vozni-park-mobile.webp',
+      'objekat-vladimirci-2.webp': 'objekat-vladimirci-2-mobile.webp',
+      'stovariste-vladimirci-1.webp': 'stovariste-vladimirci-1-mobile.webp',
+      'stovariste-vladimirci-3.webp': 'stovariste-vladimirci-3-mobile.webp',
+      'objekat-vladimirci-4.webp': 'objekat-vladimirci-4-mobile.webp',
+      'objekat-vladimirci-5.webp': 'objekat-vladimirci-5-mobile.webp',
+    };
     this.tileNodes = this.tileNodes || [];
     let idx = 0;
     const categories = catDefs.map(c => {
@@ -118,14 +159,18 @@ class Component extends DCLogic {
         return {
           id: 'gal-' + i,
           src: (i < 6 || this.state.visible[i]) ? './assets/gallery/' + fname : '',
+          // Only the first 2 (the ones matched by the preload links above)
+          // get fetchpriority=high; same fetchpriority-before-src ordering
+          // discipline used elsewhere so image-slot.js picks it up before
+          // the src-triggered fetch fires.
+          fetchpriority: i < 2 ? 'high' : '',
+          srcset: mobileVariants[fname] ? './assets/gallery/' + mobileVariants[fname] + ' 750w, ./assets/gallery/' + fname + ' 1200w' : '',
+          sizes: mobileVariants[fname] ? '(max-width: 767px) 100vw, 400px' : '',
           alt: c.name + ' — fotografija ' + (j + 1),
           label: c.name,
           delay: (Math.min(i, 8) * 0.05).toFixed(2) + 's',
           onClick: () => this.setState({ lightboxIndex: i }),
-          ref: (el) => {
-            this.tileNodes[i] = el;
-            if (el) { el.setAttribute('data-idx', String(i)); if (this.io && !this.state.visible[i]) this.io.observe(el); }
-          },
+          ref: (el) => { this.tileNodes[i] = el; },
         };
       });
       return { name: c.name, countLabel: String(c.files.length).padStart(2, '0'), tiles };
