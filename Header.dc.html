@@ -30,7 +30,7 @@
       </sc-for>
     </nav>
     <a href="Kontakt.dc.html" class="cta-red" style="display:{{ navDisplay }};font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;background:#E3000F;color:#FFFFFF;text-decoration:none;padding:10px 20px;white-space:nowrap;margin-left:auto;">Zatraži ponudu</a>
-    <button onClick="{{ toggleMenu }}" style="display:{{ hamburgerDisplay }};flex-direction:column;gap:5px;background:none;border:none;padding:8px;cursor:pointer;">
+    <button onClick="{{ toggleMenu }}" aria-label="{{ menuLabel }}" aria-expanded="{{ menuExpanded }}" style="display:{{ hamburgerDisplay }};flex-direction:column;gap:5px;background:none;border:none;padding:8px;cursor:pointer;">
       <span style="width:24px;height:2px;background:#E3000F;display:block;"></span>
       <span style="width:24px;height:2px;background:#E3000F;display:block;"></span>
       <span style="width:24px;height:2px;background:#E3000F;display:block;"></span>
@@ -74,6 +74,8 @@ class Component extends DCLogic {
       mobileNavDisplay: (this.state.narrow && this.state.mobileOpen) ? 'flex' : 'none',
       hamburgerDisplay: this.state.narrow ? 'flex' : 'none',
       toggleMenu: this.toggleMenu,
+      menuLabel: this.state.mobileOpen ? 'Zatvori meni' : 'Otvori meni',
+      menuExpanded: this.state.mobileOpen ? 'true' : 'false',
       headerBg: transparent ? 'transparent' : '#FFFFFF',
       headerPosition: transparent ? 'absolute' : 'relative',
       headerBorder: transparent ? 'none' : '2px solid #2F2483',
