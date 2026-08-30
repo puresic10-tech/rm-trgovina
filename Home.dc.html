@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
+<style>x-dc [data-raw-hide]{display:none!important}</style>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preload" as="image" href="./assets/magacin-eksterijer-vladimirci-mobile.jpg" imagesrcset="./assets/magacin-eksterijer-vladimirci-mobile.jpg 750w, ./assets/magacin-eksterijer-vladimirci.jpg 2890w" imagesizes="100vw" fetchpriority="high">
@@ -199,7 +200,7 @@
   </sc-if>
   </div>
   <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:flex;align-items:center;justify-content:center;cursor:default;">
+    <div data-raw-hide style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;display:flex;align-items:center;justify-content:center;cursor:default;">
       <div onClick="{{ closeLightbox }}" style="position:absolute;inset:0;cursor:pointer;"></div>
     <div style="position:relative;width:92vw;height:92vh;pointer-events:none;">
         <image-slot id="home-lightbox-img" fit="contain" shape="rect" radius="0" alt="{{ lightboxAlt }}" src="{{ lightboxSrc }}" placeholder="Slika"></image-slot>
