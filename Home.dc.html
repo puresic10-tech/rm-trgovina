@@ -173,7 +173,7 @@
   <div style="position:relative;width:100%;height:{{ sliderHeight }}px;background:#2F2483;overflow:hidden;">
     <sc-for list="{{ homeSlides }}" as="sl" hint-placeholder-count="5">
       <div style="{{ sl.style }}" onClick="{{ openLightbox }}">
-        <image-slot id="{{ sl.id }}" fit="{{ sliderFit }}" shape="rect" radius="0" loading="lazy" alt="{{ sl.alt }}" srcset="{{ sl.srcset }}" sizes="(max-width: 767px) 100vw, 1232px" src="{{ sl.src }}" placeholder="{{ sl.placeholder }}"></image-slot>
+        <image-slot id="{{ sl.id }}" fit="{{ sliderFit }}" shape="rect" radius="0" loading="{{ sl.loading }}" alt="{{ sl.alt }}" srcset="{{ sl.srcset }}" sizes="(max-width: 767px) 100vw, 1232px" src="{{ sl.src }}" placeholder="{{ sl.placeholder }}"></image-slot>
       </div>
     </sc-for>
     <sc-if value="{{ arrowsInside }}" hint-placeholder-val="{{ true }}">
@@ -348,6 +348,17 @@ class Component extends DCLogic {
       srcset: this.slideSrcsMobile[i] + ' 750w, ' + this.slideSrcs[i] + ' ' + this.slideSrcsW[i] + 'w',
       alt: this.slideAlts[i],
       placeholder: ph,
+      // Slide 0 is the one actually visible on first paint (mount starts
+      // at homeSlide: 0), so it alone skips loading="lazy" - lazy meant
+      // its fetch didn't even START until the slider scrolled near, while
+      // the prev/next arrows sitting on top of it (plain text glyphs, no
+      // network dependency) painted instantly, so on every load the
+      // arrows were briefly visible alone over the empty purple slider
+      // box before the photo caught up. The other 4 slides stay lazy -
+      // they're not needed until the 5s rotation timer reaches them, and
+      // sitting in the same already-visible box means native lazy-load
+      // still gets an early start on them well before their turn comes.
+      loading: i === 0 ? '' : 'lazy',
       style: 'position:absolute;inset:0;opacity:' + (i === homeSlide ? 1 : 0) + ';transition:opacity 0.6s ease;pointer-events:' + (i === homeSlide ? 'auto' : 'none') + ';cursor:pointer;',
     }));
     const homeSlideDots = this.slidePlaceholders.map((_, i) => ({
