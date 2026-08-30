@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preload" as="image" href="./assets/gallery/vozni-park.webp" imagesrcset="./assets/gallery/vozni-park-mobile.webp 750w, ./assets/gallery/vozni-park.webp 1200w" imagesizes="(max-width: 767px) 100vw, 400px" fetchpriority="high">
-<link rel="preload" as="image" href="./assets/gallery/objekat-vladimirci-2.webp" imagesrcset="./assets/gallery/objekat-vladimirci-2-mobile.webp 750w, ./assets/gallery/objekat-vladimirci-2.webp 1200w" imagesizes="(max-width: 767px) 100vw, 400px" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/gallery/vozni-park-mobile.webp" imagesrcset="./assets/gallery/vozni-park-mobile.webp 750w, ./assets/gallery/vozni-park.webp 1200w" imagesizes="(max-width: 767px) 100vw, 400px" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/gallery/objekat-vladimirci-2-mobile.webp" imagesrcset="./assets/gallery/objekat-vladimirci-2-mobile.webp 750w, ./assets/gallery/objekat-vladimirci-2.webp 1200w" imagesizes="(max-width: 767px) 100vw, 400px" fetchpriority="high">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" fetchpriority="low">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -158,9 +158,25 @@ class Component extends DCLogic {
     const categories = catDefs.map(c => {
       const tiles = c.files.map((fname, j) => {
         const i = idx++;
+        // Plain fallback filename for the `src` attribute below - the
+        // mobile variant when one exists, not the full-resolution original.
+        // `src` only matters for real rendering on a srcset-unaware
+        // browser (none in practice); every modern browser's real image
+        // candidate selection is governed entirely by srcset+sizes below,
+        // REGARDLESS of what src points to. But the browser's speculative
+        // PRELOAD SCANNER (the pre-parser that discovers resources before
+        // any JS runs) does NOT run that same selection logic on this
+        // custom element - it naively fetches the literal `src` value in
+        // addition to the srcset-resolved one, so a full-res `src` here
+        // was silently doubling network traffic on every load (confirmed
+        // via CDP request-initiator inspection: both fetches show up as
+        // initiator.type "parser"). Pointing `src` at the small file too
+        // eliminates that duplicate fetch with zero effect on what
+        // actually renders.
+        const fallbackFname = mobileVariants[fname] || fname;
         return {
           id: 'gal-' + i,
-          src: (i < 6 || this.state.visible[i]) ? './assets/gallery/' + fname : '',
+          src: (i < 6 || this.state.visible[i]) ? './assets/gallery/' + fallbackFname : '',
           // Only the first 2 (the ones matched by the preload links above)
           // get fetchpriority=high; same fetchpriority-before-src ordering
           // discipline used elsewhere so image-slot.js picks it up before

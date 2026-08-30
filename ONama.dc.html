@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preload" as="image" href="./assets/gallery/tim-i-magacin-1.webp" imagesrcset="./assets/gallery/tim-i-magacin-1-mobile.webp 750w, ./assets/gallery/tim-i-magacin-1.webp 1200w" imagesizes="(max-width: 767px) 100vw, 600px" fetchpriority="high">
+<link rel="preload" as="image" href="./assets/gallery/tim-i-magacin-1-mobile.webp" imagesrcset="./assets/gallery/tim-i-magacin-1-mobile.webp 750w, ./assets/gallery/tim-i-magacin-1.webp 1200w" imagesizes="(max-width: 767px) 100vw, 600px" fetchpriority="high">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" fetchpriority="low">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -102,7 +102,16 @@ class Component extends DCLogic {
     return {
       slides: this.files.map((f, j) => ({
         id: 'onama-s' + j,
-        src: './assets/gallery/' + f,
+        // Slide 0's plain `src` fallback points at the mobile file, not
+        // the full-res original - the browser's speculative preload
+        // scanner fetches this literal value in ADDITION to whatever
+        // srcset/sizes resolve to on this custom element (confirmed via
+        // CDP request-initiator inspection: both show up as initiator
+        // "parser"), so a full-res src here was silently doubling network
+        // traffic on every load. Real rendering is unaffected either way
+        // - actual candidate selection is governed entirely by srcset+
+        // sizes on every modern browser, regardless of what src points to.
+        src: './assets/gallery/' + (j === 0 ? 'tim-i-magacin-1-mobile.webp' : f),
         alt: this.fileAlts[j],
         // Only the first slide is the LCP candidate (it's the one painted
         // on initial load, matching the preload link above) - the rest
