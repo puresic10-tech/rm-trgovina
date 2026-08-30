@@ -606,7 +606,32 @@
         this._releaseMask(true);
         this._applyView();
       });
+      // Retries a failed load up to twice (short backoff, then a
+      // cache-busted final attempt) before giving up - a real src that's
+      // simply unreachable (typo, deleted file) still ends up in the
+      // regular error state below, but this absorbs the transient blips a
+      // CDN edge occasionally serves (a momentary miss, a mid-propagation
+      // response) that a plain retry a moment later resolves on its own,
+      // rather than leaving the slot permanently empty until the visitor
+      // manually reloads.
+      this._errorRetries = 0;
       this._img.addEventListener('error', () => {
+        const url = this._img.getAttribute('src');
+        if (url && this._errorRetries < 2) {
+          this._errorRetries++;
+          const bust = this._errorRetries === 2
+            ? (url.includes('?') ? '&' : '?') + '_retry=' + Date.now()
+            : '';
+          const delay = this._errorRetries === 1 ? 400 : 1200;
+          setTimeout(() => {
+            // The slot may have moved on (a different src, a real removal)
+            // during the delay - only retry if this is still the URL we
+            // failed on.
+            if (this._img.getAttribute('src') === url) this._img.src = url + bust;
+          }, delay);
+          return;
+        }
+        this._errorRetries = 0;
         this._loadPending = false;
         this._releaseMask(true);
       });
@@ -726,6 +751,29 @@
       // frame's clamp range.
       this._ro = new ResizeObserver(() => this._render());
       this._ro.observe(this);
+      // Self-heal watchdog: React's own reconciler occasionally strips
+      // `data-filled` from this element on a re-render of an ANCESTOR
+      // component, even when none of the props WE'RE rendered with
+      // (src/alt/fit/...) changed - confirmed by capturing the actual
+      // react-dom stack trace calling removeAttribute on it. Since
+      // `data-filled` is set imperatively by _render() itself (not a
+      // template-authored attribute), it can't be fixed by observing it
+      // the normal way: adding it to observedAttributes would make our
+      // OWN setAttribute calls re-enter attributeChangedCallback too.
+      // Watching for it independently and putting it straight back
+      // whenever it's gone missing while the slot is genuinely showing an
+      // image sidesteps that - this is what was making filled slots
+      // (confirmed: the <img> itself loads fine, only this attribute gets
+      // dropped) intermittently fall back to the empty-state dashed ring,
+      // worse on elements that get re-rendered often (e.g. a marquee of
+      // logos, re-rendered on every tick of an unrelated animation
+      // elsewhere on the page).
+      this._selfHeal = new MutationObserver(() => {
+        if (this._img.getAttribute('src') && !this.hasAttribute('data-filled')) {
+          this.setAttribute('data-filled', '');
+        }
+      });
+      this._selfHeal.observe(this, { attributes: true, attributeFilter: ['data-filled'] });
       load();
       this._render();
     }
@@ -738,6 +786,7 @@
       this.removeEventListener('dragleave', this);
       this.removeEventListener('drop', this);
       if (this._ro) { this._ro.disconnect(); this._ro = null; }
+      if (this._selfHeal) { this._selfHeal.disconnect(); this._selfHeal = null; }
       // commit=false: a disconnect is not a user intent â€” committing here
       // would persist whatever half-finished drag a React remount or DOM
       // splice happened to interrupt. Deliberate exits commit on their own
@@ -849,6 +898,9 @@
       if (name === 'src' && oldVal !== newVal) {
         this._gen++;
         this._swapGen = 0;
+        // A genuinely new src (author/host change, not our own error-retry
+        // reassignment below) gets a fresh retry budget.
+        this._errorRetries = 0;
       }
       // Pre-connection (during initial HTML parsing), the parser applies
       // every attribute from the start tag one at a time, firing this
