@@ -53,8 +53,10 @@
       </div>
       <div style="display:grid;grid-template-columns:{{ galGridCols }};gap:20px;">
         <sc-for list="{{ cat.tiles }}" as="t" hint-placeholder-count="4">
-          <div ref="{{ t.ref }}" onClick="{{ t.onClick }}" style="min-width:0;height:300px;background:#EAE8E5;cursor:pointer;animation:tileIn 0.5s ease {{ t.delay }} both;">
-            <image-slot id="{{ t.id }}" fit="cover" shape="rect" radius="0" fetchpriority="{{ t.fetchpriority }}" srcset="{{ t.srcset }}" sizes="{{ t.sizes }}" alt="{{ t.alt }}" src="{{ t.src }}" placeholder="{{ t.label }}"></image-slot>
+          <div ref="{{ t.ref }}" onClick="{{ t.onClick }}" style="{{ t.wrapStyle }}">
+            <sc-if value="{{ t.mounted }}" hint-placeholder-val="{{ true }}">
+              <image-slot id="{{ t.id }}" fit="cover" shape="rect" radius="0" fetchpriority="{{ t.fetchpriority }}" srcset="{{ t.srcset }}" sizes="{{ t.sizes }}" alt="{{ t.alt }}" src="{{ t.src }}" placeholder="{{ t.label }}"></image-slot>
+            </sc-if>
           </div>
         </sc-for>
       </div>
@@ -175,9 +177,21 @@ class Component extends DCLogic {
         // eliminates that duplicate fetch with zero effect on what
         // actually renders.
         const fallbackFname = mobileVariants[fname] || fname;
+        // Whether this tile is actually mounted as a real <image-slot>
+        // custom element yet. Below-the-fold tiles used to ALL mount their
+        // own <image-slot> (each with its own shadow DOM, ResizeObserver,
+        // event listeners) immediately, even with an empty src - across
+        // 35 tiles that's real, measured CPU cost (Style & Layout was the
+        // single largest chunk of main-thread work on this page), and
+        // Lighthouse's mobile simulation multiplies CPU cost 4x, so it was
+        // a real contributor to LCP. Only mounting the custom element once
+        // a tile is actually eager/visible cuts the up-front element count
+        // from 35 to 6.
+        const mounted = i < 6 || this.state.visible[i];
         return {
           id: 'gal-' + i,
-          src: (i < 6 || this.state.visible[i]) ? './assets/gallery/' + fallbackFname : '',
+          mounted,
+          src: mounted ? './assets/gallery/' + fallbackFname : '',
           // Only the first 2 (the ones matched by the preload links above)
           // get fetchpriority=high; same fetchpriority-before-src ordering
           // discipline used elsewhere so image-slot.js picks it up before
@@ -187,7 +201,14 @@ class Component extends DCLogic {
           sizes: mobileVariants[fname] ? '(max-width: 767px) 100vw, 400px' : '',
           alt: c.name + ' — fotografija ' + (j + 1),
           label: c.name,
-          delay: (Math.min(i, 8) * 0.05).toFixed(2) + 's',
+          // The fade-in animation only matters for tiles visible at load -
+          // applying it (and its keyframe/timing bookkeeping) to all 35
+          // wrapper divs was extra style-engine work for the 29 that are
+          // still empty placeholders at that point anyway; they get a
+          // fresh element (and can fade in then, if wanted later) once
+          // they actually mount.
+          wrapStyle: 'min-width:0;height:300px;background:#EAE8E5;cursor:pointer;'
+            + (mounted ? 'animation:tileIn 0.5s ease ' + (Math.min(i, 8) * 0.05).toFixed(2) + 's both;' : ''),
           onClick: () => this.setState({ lightboxIndex: i }),
           ref: (el) => { this.tileNodes[i] = el; },
         };
