@@ -90,13 +90,24 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { i: 0 };
+  state = { i: 0, otherSlidesReady: false };
   files = ['tim-i-magacin-1.webp', 'tim-i-magacin-2.webp', 'tim-i-magacin-3.webp', 'tim-i-magacin-4.webp'];
   fileAlts = ['Tim RM-Trgovina ispred magacina', 'Magacin i stovarište RM-Trgovina', 'Tim RM-Trgovina na stovarištu', 'Organizacija robe u magacinu RM-Trgovina'];
   componentDidMount() {
     this.t = setInterval(() => this.setState(s => ({ i: (s.i + 1) % this.files.length })), 5000);
+    // Slides 1-3 sit at opacity:0 (position:absolute;inset:0, same box as
+    // slide 0) until the carousel rotates to them - `loading="lazy"`
+    // doesn't defer them because their bounding box already overlaps the
+    // viewport, so the only way to actually delay their fetch is to not
+    // give them a real `src` until slide 0's own critical fetch has had a
+    // head start. 2s comfortably clears slide 0 while still finishing
+    // well before the 5s timer would ever reveal slide 1.
+    this.slidesTimer = setTimeout(() => this.setState({ otherSlidesReady: true }), 2000);
   }
-  componentWillUnmount() { if (this.t) clearInterval(this.t); }
+  componentWillUnmount() {
+    if (this.t) clearInterval(this.t);
+    if (this.slidesTimer) clearTimeout(this.slidesTimer);
+  }
   renderVals() {
     const cur = this.state.i;
     return {
@@ -111,16 +122,20 @@ class Component extends DCLogic {
         // traffic on every load. Real rendering is unaffected either way
         // - actual candidate selection is governed entirely by srcset+
         // sizes on every modern browser, regardless of what src points to.
-        src: './assets/gallery/' + (j === 0 ? 'tim-i-magacin-1-mobile.webp' : f),
+        // Only slide 0 is the LCP candidate (it's the only one painted on
+        // initial load). Slides 1-3 used to load eagerly ("already
+        // discoverable, just not LCP-critical") on the theory that eager-
+        // but-not-prioritized was harmless - but eager still means the
+        // browser fetches all 3 of their full-resolution originals
+        // (200KB+174KB+210KB) immediately, competing for the same
+        // throttled connection as slide 0's own fetch and measurably
+        // slowing THAT down. Withholding their `src` for 2s (see
+        // otherSlidesReady above) defers that competition until slide 0
+        // has had a head start, well before the 5s timer would ever
+        // reveal slide 1.
+        src: j === 0 ? './assets/gallery/tim-i-magacin-1-mobile.webp'
+          : this.state.otherSlidesReady ? './assets/gallery/' + f : '',
         alt: this.fileAlts[j],
-        // Only the first slide is the LCP candidate (it's the one painted
-        // on initial load, matching the preload link above) - the rest
-        // stay at default priority since they're already discoverable in
-        // the initial HTML and aren't lazy, just not LCP-critical. Same
-        // reasoning for srcset: only slide 0 has a mobile-sized (750px)
-        // companion generated - it's the only one that matters for LCP,
-        // the full 1200px original was adding ~1.5-2s of resource load
-        // time under throttled mobile.
         fetchpriority: j === 0 ? 'high' : '',
         srcset: j === 0 ? './assets/gallery/tim-i-magacin-1-mobile.webp 750w, ./assets/gallery/tim-i-magacin-1.webp 1200w' : '',
         sizes: j === 0 ? '(max-width: 767px) 100vw, 600px' : '',
