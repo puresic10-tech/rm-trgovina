@@ -47,7 +47,7 @@
 
 <section style="max-width:1280px;margin:0 auto;padding:24px 24px 90px;border-top:2px solid #2F2483;">
   <sc-for list="{{ rows }}" as="cat" hint-placeholder-count="10">
-    <div style="border-bottom:1px solid #DCDAD5;padding-bottom:{{ cat.extraBottomGap }};">
+    <div id="{{ cat.anchor }}" style="border-bottom:1px solid #DCDAD5;padding-bottom:{{ cat.extraBottomGap }};scroll-margin-top:88px;">
       <div onClick="{{ cat.onToggle }}" style="display:grid;grid-template-columns:{{ cat.headerCols }};gap:{{ cat.headerGap }};padding:{{ cat.rowPadding }};align-items:start;cursor:pointer;">
         <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:{{ cat.numSize }};color:{{ cat.numFill }};-webkit-text-stroke:{{ cat.numStroke }};margin-bottom:{{ cat.numMarginBottom }};">{{ cat.num }}</div>
         <div>
@@ -132,9 +132,13 @@ class Component extends DCLogic {
   // sized) rows once the module loaded - that swap was the actual source
   // of the huge layout shift Lighthouse was attributing to <main>, not
   // the <main> landmark itself.
+  // `anchor` is the URL fragment each category is reachable at (e.g.
+  // Asortiman.dc.html#cement-i-vezivni-materijali) - matched against
+  // location.hash on mount to auto-open + scroll to that category. See
+  // componentDidMount below.
   categories = [
     {
-      num: '01', name: 'Cement i vezivni materijali',
+      num: '01', name: 'Cement i vezivni materijali', anchor: 'cement-i-vezivni-materijali',
       desc: 'Cement, kreč i gotove mešavine za sve vrste radova, na lageru za odmah preuzimanje.',
       groups: [
         { brand: 'Titan', items: ['Cement 42,5N'] },
@@ -144,13 +148,13 @@ class Component extends DCLogic {
       images: ['krec-1.webp', 'cement-2.webp', 'cement-vreca.webp'],
     },
     {
-      num: '02', name: 'Armatura i gvožđe',
+      num: '02', name: 'Armatura i gvožđe', anchor: 'armatura-i-gvozdje',
       desc: 'Armaturne mreže, šipke i profili za konstrukcije svih veličina.',
       items: ['Armaturne mreže Q serije', 'Rebrasta betonska šipka Ø8–Ø20', 'Uzengije po meri', 'Sečenje i savijanje po specifikaciji'],
       images: ['armatura-1.webp', 'armatura-4.webp', 'uzengije-1.webp', 'armatura-6.webp'],
     },
     {
-      num: '03', name: 'Opeka i blok',
+      num: '03', name: 'Opeka i blok', anchor: 'opeka-i-blok',
       desc: 'Blok, giter i fasadna opeka renomiranih proizvođača, u više formata.',
       groups: [
         { brand: 'Zorka', items: ['Giter blok 19, 25', 'Klima blok'] },
@@ -160,13 +164,13 @@ class Component extends DCLogic {
       images: ['opeka-i-blok-1.webp', 'blok-i-cigla-3.webp', 'betonski-blok-i-cigla-5.webp', 'betonski-blok-1.webp'],
     },
     {
-      num: '04', name: 'Pelet',
+      num: '04', name: 'Pelet', anchor: 'pelet',
       desc: 'Drveni pelet za grejanje — kvalitetno gorivo, dostava na adresu.',
       items: ['Pelet u vreći od 15kg', 'Pelet na paletama', 'Dostava na adresu'],
       images: ['materijal-u-magacinu.webp'],
     },
     {
-      num: '05', name: 'Krovni materijali',
+      num: '05', name: 'Krovni materijali', anchor: 'krovni-materijali',
       desc: 'Crep, krovni lim i prateća oprema za pokrivanje i opšivke.',
       groups: [
         { brand: 'Wienerberger Tondach', items: ['Crep'] },
@@ -177,31 +181,31 @@ class Component extends DCLogic {
       images: ['krovni-crep-1.webp', 'krovni-crep-2.webp', 'krovni-crep-3.webp', 'krovni-crep-4.webp'],
     },
     {
-      num: '06', name: 'Građa',
+      num: '06', name: 'Građa', anchor: 'gradja',
       desc: 'Rezana građa, gredice, letve i daske — za krovne konstrukcije i oplatu.',
       items: ['Rogovi i gredice', 'Letve i kontraletve', 'Daske i fosne', 'OSB i iverica'],
       images: ['gradja-rogovi-1.webp', 'gradja-4.webp', 'gradja-7.webp', 'gradja-9.webp'],
     },
     {
-      num: '07', name: 'Agregati',
+      num: '07', name: 'Agregati', anchor: 'agregati',
       desc: 'Pesak, šljunak i drobljeni kamen — prevoz i dostava na gradilište.',
       items: ['Rečni pesak', 'Šljunak', 'Drobljeni kamen (rizla)', 'Dostava kiperom'],
       images: ['agregat-pesak.webp', 'agregat-sljunak.webp', 'agregat-drobljeni-kamen.webp', 'agregat-dostava-kiperom.webp'],
     },
     {
-      num: '08', name: 'Đubrivo',
+      num: '08', name: 'Đubrivo', anchor: 'djubrivo',
       desc: 'Mineralno đubrivo za poljoprivredu i baštu.',
       items: ['Mineralno đubrivo', 'Dostava na adresu'],
       images: ['djubrivo-1.webp', 'djubrivo-2.webp'],
     },
     {
-      num: '09', name: 'Betonska galanterija',
+      num: '09', name: 'Betonska galanterija', anchor: 'betonska-galanterija',
       desc: 'Betonske cevi za šahtove i propuste.',
       items: ['Betonske cevi'],
       images: ['betonska-galanterija-1.webp'],
     },
     {
-      num: '10', name: 'Alat i pribor',
+      num: '10', name: 'Alat i pribor', anchor: 'alat-i-pribor',
       desc: 'Ručni alat i sitan pribor potreban za svaki gradilišni zadatak.',
       groups: [
         { brand: 'Ostalo', items: ['Ručni alat', 'Ekseri', 'Vezivni i spojni materijal'] },
@@ -213,6 +217,28 @@ class Component extends DCLogic {
   componentDidMount() {
     this.onResize = () => this.setState({ isMobile: window.innerWidth < 760 });
     window.addEventListener('resize', this.onResize);
+    // Land directly on a category when arriving via an anchor link (e.g.
+    // Home's "Pregled asortimana" tiles link to
+    // Asortiman.dc.html#cement-i-vezivni-materijali). Native browser
+    // hash-scrolling doesn't get us there on its own: the category panel
+    // starts collapsed (display:none), so there's nothing at that id's
+    // real position to land on yet, and separately this site's actual
+    // scrolling happens inside <body> (overflow-y:auto), not the window,
+    // which the browser's own initial hash-scroll doesn't reliably
+    // target. So instead: open the matching category first, then once
+    // that commits (setState's callback, not a guess-timed delay),
+    // scrollIntoView() the row - it walks up to whichever ancestor
+    // actually scrolls on its own, so it works regardless of that.
+    const hash = (typeof window !== 'undefined' ? window.location.hash : '').replace(/^#/, '');
+    if (hash) {
+      const idx = this.categories.findIndex(c => c.anchor === hash);
+      if (idx !== -1) {
+        this.setState({ open: idx }, () => {
+          const el = document.getElementById(hash);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
   }
   componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
   renderVals() {

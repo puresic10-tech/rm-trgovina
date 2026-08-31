@@ -118,7 +118,7 @@
   </div>
   <div style="display:grid;grid-template-columns:{{ catGridCols }};gap:14px;">
     <sc-for list="{{ catTiles }}" as="c" hint-placeholder-count="6">
-      <a href="Asortiman.dc.html" style="grid-column:span {{ c.mobileSpan }};min-width:0;background:#FFFFFF;border:1px solid #DCDAD5;border-left:4px solid #2F2483;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:120px;padding-right:20px;">
+      <a href="{{ c.href }}" style="grid-column:span {{ c.mobileSpan }};min-width:0;background:#FFFFFF;border:1px solid #DCDAD5;border-left:4px solid #2F2483;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:120px;padding-right:20px;">
         <div style="padding:22px 20px;display:flex;flex-direction:column;gap:8px;min-width:0;">
           <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E3000F;">{{ c.num }}</span>
           <span style="font-family:'Oswald',sans-serif;font-weight:600;font-size:18px;color:#2F2483;text-wrap:pretty;">{{ c.name }}</span>
@@ -319,15 +319,18 @@ class Component extends DCLogic {
 
     const catGridCols = this.state.isCatMobile ? '1fr' : 'repeat(2,minmax(0,1fr))';
     const catTiles = [
-      { num: '01', name: 'Cement i vezivni materijali', span: 1, imgSrc: './assets/cement-i-vezivo-2.webp' },
-      { num: '02', name: 'Armatura i gvožđe', span: 1, imgSrc: './assets/armatura-i-gvozdje.webp' },
-      { num: '03', name: 'Opeka i blok', span: 1, imgSrc: './assets/opeka-i-blok-2.webp' },
-      { num: '04', name: 'Pelet', span: 1, imgSrc: './assets/pelet-za-grejanje.webp' },
-      { num: '05', name: 'Krovni materijali', span: 1, imgSrc: './assets/krovni-crep-2.webp' },
-      { num: '06', name: 'Građa', span: 1, imgSrc: './assets/gradjevinska-grada.webp' },
+      // anchor must match the corresponding category's `anchor` value in
+      // Asortiman.dc.html exactly - Asortiman reads location.hash on
+      // mount to auto-open and scroll to that category.
+      { num: '01', name: 'Cement i vezivni materijali', span: 1, imgSrc: './assets/cement-i-vezivo-2.webp', anchor: 'cement-i-vezivni-materijali' },
+      { num: '02', name: 'Armatura i gvožđe', span: 1, imgSrc: './assets/armatura-i-gvozdje.webp', anchor: 'armatura-i-gvozdje' },
+      { num: '03', name: 'Opeka i blok', span: 1, imgSrc: './assets/opeka-i-blok-2.webp', anchor: 'opeka-i-blok' },
+      { num: '04', name: 'Pelet', span: 1, imgSrc: './assets/pelet-za-grejanje.webp', anchor: 'pelet' },
+      { num: '05', name: 'Krovni materijali', span: 1, imgSrc: './assets/krovni-crep-2.webp', anchor: 'krovni-materijali' },
+      { num: '06', name: 'Građa', span: 1, imgSrc: './assets/gradjevinska-grada.webp', anchor: 'gradja' },
     ].map((c, i) => {
       const sq = 98;
-      return { ...c, mobileSpan: 1, imgId: 'cat-tile-' + i, hasImg: !!c.imgSrc, noImg: !c.imgSrc, fit: 'contain', imgBoxSize: sq, imgBoxHeight: sq, imgBoxW: 98, imgBoxH: 98, imgAlt: c.name };
+      return { ...c, mobileSpan: 1, imgId: 'cat-tile-' + i, hasImg: !!c.imgSrc, noImg: !c.imgSrc, fit: 'contain', imgBoxSize: sq, imgBoxHeight: sq, imgBoxW: 98, imgBoxH: 98, imgAlt: c.name, href: 'Asortiman.dc.html#' + c.anchor };
     });
 
     const whyRaw = [
