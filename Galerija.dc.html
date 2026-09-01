@@ -187,8 +187,18 @@ class Component extends DCLogic {
         // Lighthouse's mobile simulation multiplies CPU cost 4x, so it was
         // a real contributor to LCP. Only mounting the custom element once
         // a tile is actually eager/visible cuts the up-front element count
-        // from 35 to 6.
-        const mounted = i < 6 || this.state.visible[i];
+        // from 35 to 6 (desktop) / 2 (mobile). 6 was picked for desktop's
+        // 3-column grid (2 full rows). Mobile is single-column though (see
+        // galGridCols below), so at the real mobile viewport Lighthouse
+        // tests (412x823) tiles 2-5 sit entirely below the fold - measured
+        // via Playwright: tile 0 fully visible, tile 1 barely (~95px),
+        // tiles 2-5 fully off-screen. Mounting them anyway was pure wasted
+        // Style/Layout + Script Evaluation main-thread cost on exactly the
+        // metric being optimized (that cost gets 4x-multiplied under
+        // Lighthouse's simulated mobile CPU throttle, so it was a real,
+        // outsized contributor to elementRenderDelay on mobile specifically).
+        const eagerCount = isMobile ? 2 : 6;
+        const mounted = i < eagerCount || this.state.visible[i];
         return {
           id: 'gal-' + i,
           mounted,
