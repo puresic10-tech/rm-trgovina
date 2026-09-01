@@ -141,7 +141,14 @@ class Component extends DCLogic {
         fetchpriority: j === 0 ? 'high' : '',
         srcset: j === 0 ? './assets/gallery/tim-i-magacin-1-mobile.webp 750w, ./assets/gallery/tim-i-magacin-1.webp 1200w' : '',
         sizes: j === 0 ? '(max-width: 767px) 100vw, 600px' : '',
-        style: 'position:absolute;inset:0;opacity:' + (j === cur ? 1 : 0) + ';transition:opacity 0.7s ease;',
+        // pointer-events:none on the inactive (opacity:0) slides matters
+        // beyond just clicks: all 4 slides stack in the exact same
+        // position:absolute;inset:0 box with no z-index, so without this,
+        // hit-testing at that screen position (a real click, or DevTools'
+        // "Inspect Element") always resolves to the LAST slide in DOM
+        // order regardless of which one is actually visible - to a human
+        // it looks like every slide "shows" the same wrong image/path.
+        style: 'position:absolute;inset:0;opacity:' + (j === cur ? 1 : 0) + ';transition:opacity 0.7s ease;pointer-events:' + (j === cur ? 'auto' : 'none') + ';',
       })),
       dots: this.files.map((_, j) => ({
         onClick: () => this.setState({ i: j }),
